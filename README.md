@@ -24,7 +24,7 @@ if not, reinstall and enable every checkboxes
 --------------------------------------------------------------
 
 # After Python is installed
-## Open Command Prompt to install Flask
+### Open Command Prompt to install Flask
 
 to install Flask or use any Python stuffs
 you need **python -m** before every command
@@ -36,7 +36,7 @@ and follow other environments command using the link:
 
 https://flask.palletsprojects.com/en/2.3.x/installation/
 
-# And things are ready to go. To run a python file, type:
+### And things are ready to go. To run a python file, type:
 ```
 python -m [file_name]
 ```
