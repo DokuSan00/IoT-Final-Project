@@ -1,3 +1,6 @@
+[!NOTE] GPIO isn't supported on Windows, so don't forget to "comment out" all GPIO codes before run
+[!NOTE] Working on window, is only for working with web's appearance/styling
+
 # To install Flask on Windows, you need Python:
 
 https://www.python.org/downloads/
