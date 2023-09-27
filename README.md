@@ -25,8 +25,8 @@ if not, reinstall and enable every checkboxes
 
 --------------------------------------------------------------
 
-#After Python is installed
-##Open Command Prompt to install Flask
+# After Python is installed
+## Open Command Prompt to install Flask
 
 to install Flask or use any Python stuffs
 you need **python -m** before every command
