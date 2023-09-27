@@ -5,12 +5,14 @@ https://www.python.org/downloads/
 ## Open the *.exe* after finished downloading
 
 Step1: Select "Customize Installation"
+
 Step2: Among 6 checkboxes
-_ 2, 3, 4, 5, 6 must be selected
-_ Press "Next"
+[!NOTE] 2, 3, 4, 5, 6 must be selected
+Press "Next"
+
 Step3: 7 checkboxes
-_ 1, 2, 4, 5 must be selected
-_ Press "Install"
+[!NOTE] 1, 2, 4, 5 must be selected
+Press "Install"
 
 Open Command Prompt:
 try commands:
