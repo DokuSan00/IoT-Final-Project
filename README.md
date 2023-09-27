@@ -6,7 +6,7 @@ https://www.python.org/downloads/
 
 Step1: Select "Customize Installation"
 
-Step2: Among 6 checkboxes
+Step2: Among 6 checkboxes\n
 2, 3, 4, 5, 6 must be selected
 Press "Next"
 
@@ -16,8 +16,10 @@ Press "Install"
 
 Open Command Prompt:
 try commands:
-	**python --version**
-	**pip --version**
+```
+python --version
+pip --version
+```
 both shoulds tell you its version
 if not, reinstall and enable every checkboxes
 
@@ -29,18 +31,21 @@ if not, reinstall and enable every checkboxes
 to install Flask or use any Python stuffs
 you need **python -m** before every command
 so, to install Flask, type:
-	**python -m pip install Flask**
-
+```	
+ python -m pip install Flask
+```
 and follow other environments command using the link:
 
 https://flask.palletsprojects.com/en/2.3.x/installation/
 
 # And things are ready to go. To run a python file, type:
-
-**python -m [file_name]**
+```
+python -m [file_name]
+```
 
 where **[file_name]** - what ever file you want to run (**.py**)
 
 In our work, do type:
-
-**python -m app.py**
+```
+python -m app.py
+```
