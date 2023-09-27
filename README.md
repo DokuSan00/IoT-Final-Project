@@ -4,13 +4,13 @@ https://www.python.org/downloads/
 
 ## Open the *.exe* after finished downloading
 
-Step1: Select "Customize Installation"
+#### Step1: Select "Customize Installation"
 
-Step2: Among 6 checkboxes\n
+#### Step2: Among 6 checkboxes
 2, 3, 4, 5, 6 must be selected
 Press "Next"
 
-Step3: 7 checkboxes
+#### Step3: 7 checkboxes
 1, 2, 4, 5 must be selected
 Press "Install"
 
