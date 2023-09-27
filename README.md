@@ -7,12 +7,10 @@ https://www.python.org/downloads/
 #### Step1: Select "Customize Installation"
 
 #### Step2: Among 6 checkboxes
-2, 3, 4, 5, 6 must be selected
-Press "Next"
+2, 3, 4, 5, 6 must be selected and press "Next"
 
 #### Step3: 7 checkboxes
-1, 2, 4, 5 must be selected
-Press "Install"
+1, 2, 4, 5 must be selected and press "Install"
 
 Open Command Prompt:
 try commands:
