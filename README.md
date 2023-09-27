@@ -35,10 +35,6 @@ so, to install Flask, type:
 ```	
  python -m pip install Flask
 ```
-and follow other environments command using the link:
-
-https://flask.palletsprojects.com/en/2.3.x/installation/
-
 ### And things are ready to go. To run a python file, type:
 ```
 python -m [file_name]
