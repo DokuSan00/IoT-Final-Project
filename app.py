@@ -1,12 +1,15 @@
 import RPi.GPIO as GPIO
-
-from flask import Flask, render_template, request, url_for, flash, redirect
-app = Flask(__name__)
+import time as time
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(26, GPIO.OUT, initial=0)
+LED = 26
+
+GPIO.setup(LED, GPIO.OUT, initial=0)
+
+from flask import Flask, render_template, request, url_for, flash, redirect
+app = Flask(__name__)
 
 @app.route('/', methods=["POST", "GET"])
 def index():
@@ -14,9 +17,9 @@ def index():
 
 @app.route("/toggle_light", methods=["POST"])
 def toggle_light():
-    # path = request.form['projectFilePath']
-    GPIO.output(26, not(bool(GPIO.input(26))))
+    time.sleep(0.1)
+    GPIO.output(LED, not(bool(GPIO.input(LED))))  #on off the light
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

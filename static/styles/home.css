@@ -1,16 +1,7 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/variables-dark";
-@import "bootstrap/scss/maps";
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/utilities";
-
-
-.btn-dark.glow-button {
-    --box-shadow-color: #f8f9fa;
+.on  {
+    box-shadow: 0px -5px 20px 5px #ffd4b1, 0px -3px 10px 4px #ffca84;
 }
 
-.glow:hover {
-    box-shadow: 0 5px 5px #f8f9fa inset, 0 0 8px rgba(102, 175, 233, 0.6);
-    border-color: #66afe9;
+.off {
+    box-shadow: 0px -5px 10px 3px #000000ea, 0px -5px 20px 5px #000000cc;
 }
