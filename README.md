@@ -33,16 +33,16 @@ to install Flask or use any Python stuffs
 you need **python -m** before every command
 so, to install Flask, type:
 ```	
- python -m pip install Flask
+ py -m pip install Flask
 ```
 ### And things are ready to go. To run a python file, type:
 ```
-python -m [file_name]
+py -m [file_name]
 ```
 
 where **[file_name]** - what ever file you want to run (**.py**)
 
 In our work, do type:
 ```
-python -m app.py
+py -m app.py
 ```
