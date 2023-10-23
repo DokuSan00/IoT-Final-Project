@@ -2,6 +2,8 @@ import RPi.GPIO as GPIO
 import time as time
 import Freenove_DHT as DHT
 import mailer
+import json
+import requests
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -10,8 +12,9 @@ GPIO.setwarnings(False)
 LED = 12
 DHTPin = 17 #define the pin of DHT11
 dht = DHT.DHT(DHTPin)
-sender = mailer.Emailer("ukniot123@outlook.com", "ukniot1029384756")
-
+sender = "ukniot123@outlook.com"
+pswd =  "ukniot1029384756"
+mailerApp = mailer.Emailer(sender, pswd)
 
 GPIO.setup(LED, GPIO.OUT, initial=0)
 
@@ -38,12 +41,59 @@ def get_data():
     return res
 
 @app.route("/motor_mail", methods=["POST"])
-def mail():
+def send_mail():
+    temp = json.loads(request.form['temp'])
     sendTo = "ukniot123@outlook.com"
-    emailSubject = "Mailling lab test"
-    emailContent = "Elo"
+    emailSubject = "Hello from automatic service"
+    emailContent = "The current temperature " + str(temp) + ". Would you like to turn on the fan?"
 
-    sender.sendmail(sendTo, emailSubject, emailContent)    
+    body = {
+        "auth": {
+            "email": sender,
+            "password": pswd,
+            "smtpServer": "smtp.office365.com",
+            "port": 587
+        },
+        "message": {
+            "to": sendTo,
+            "subject": emailSubject,
+            "text": emailContent
+        }
+    }
+
+    # mailerApp.sendmail(sendTo, emailSubject, emailContent)   
+    
+    # this is api back up if the mailerApp doest works at school (do not erase)  
+    #let theem be unrganized for now. will re-organized them later
+    r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/sendmail', json = body)
+
+    return render_template('index.html')
+
+@app.route("/read_motor_mail", methods=["POST"])
+def read_mail_turn_motor():
+    #do imap here
+
+    # back up API, if imap doesnt run
+    body = {
+        "auth": {
+            "email": "ukniot123@outlook.com",
+            "password": "ukniot1029384756",
+            "imapServer": "outlook.office365.com",
+            "port": 993
+        },
+        "filters": {
+            "from": "ukniot123@outlook.com",
+            "subject": "Re - Hello from automatic service",
+            "text": "*"
+        },
+        "options": {
+            "only_unseen": False,
+            "delete_email": False
+        }
+    }
+
+    r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/readmail', json = body)
+    print(r.text)
     return render_template('index.html')
 
 if __name__ == '__main__':

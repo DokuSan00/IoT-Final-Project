@@ -9,10 +9,8 @@ class Emailer:
         self.username = username
         self.password = password
 
-        session = smtplib.SMTP(Emailer.SMTP_SERVER, Emailer.SMTP_PORT)
-        session.ehlo()
-        session.starttls()
-        session.ehlo()
+        Emailer.session = smtplib.SMTP(Emailer.SMTP_SERVER, Emailer.SMTP_PORT)
+        Emailer.session.starttls()
         Emailer.session.login(self.username, self.password)
 
     def sendmail(self, recipient, subject, content):
@@ -30,4 +28,3 @@ class Emailer:
 
         #Send Email & Exit
         Emailer.session.sendmail(self.username, recipient, headers + "\r\n\r\n" + content)
-        Emailer.session.quit
