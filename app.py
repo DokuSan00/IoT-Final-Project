@@ -10,11 +10,25 @@ GPIO.setwarnings(False)
 
 #set up variable , instance
 LED = 12
-DHTPin = 17 #define the pin of DHT11
+DHTPin = 21 #define the pin of DHT11
 dht = DHT.DHT(DHTPin)
+
+#set up emailer server
+server = 'smtp-mail.outlook.com'  #Email Server (don't change!)
+port = 587  #Server Port (don't change!)
 sender = "ukniot123@outlook.com"
 pswd =  "ukniot1029384756"
-mailerApp = mailer.Emailer(sender, pswd)
+mailerApp = mailer.Emailer(server, port, sender, pswd)
+
+#set up motor
+Motor1 = 22 # Enable Pin
+Motor2 = 27 # Input Pin
+Motor3 = 17 # Input Pin 
+
+GPIO.setup(Motor1,GPIO.OUT, initial=0)
+GPIO.setup(Motor2,GPIO.OUT, initial=0)
+GPIO.setup(Motor3,GPIO.OUT, initial=0) 
+
 
 GPIO.setup(LED, GPIO.OUT, initial=0)
 
@@ -27,26 +41,34 @@ def index():
 
 @app.route("/toggle_light", methods=["POST"])
 def toggle_light():
-    time.sleep(0.2)
-    GPIO.output(LED, not(bool(GPIO.input(LED))))  #flip the current state 0->1 | 1->0
+    isOn = json.loads(request.form['isOn'])
+    GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
     return render_template('index.html')
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    res = {"temp":0,"humid":0}
-    chk = dht.readDHT11()
-    if (chk is dht.DHTLIB_OK):
-        res["humid"] = dht.humidity
-        res["temp"] = dht.temperature
+    res = {"temp":1,"humid":0}
+    try:
+        chk = dht.readDHT11()
+        if (chk is dht.DHTLIB_OK):
+            res["humid"] = dht.humidity
+            res["temp"] = dht.temperature
+    except:
+        return res
     return res
 
 @app.route("/motor_mail", methods=["POST"])
 def send_mail():
     temp = json.loads(request.form['temp'])
+
     sendTo = "ukniot123@outlook.com"
     emailSubject = "Hello from automatic service"
     emailContent = "The current temperature " + str(temp) + ". Would you like to turn on the fan?"
 
+    # mailerApp.sendmail(sendTo, emailSubject, emailContent)   
+
+    # this is api back up if the mailerApp doest works at school (do not erase)  
+    #let theem be unrganized for now. will re-organized them later
     body = {
         "auth": {
             "email": sender,
@@ -61,11 +83,7 @@ def send_mail():
         }
     }
 
-    # mailerApp.sendmail(sendTo, emailSubject, emailContent)   
-    
-    # this is api back up if the mailerApp doest works at school (do not erase)  
-    #let theem be unrganized for now. will re-organized them later
-    r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/sendmail', json = body)
+    # r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/sendmail', json = body)
 
     return render_template('index.html')
 
@@ -94,6 +112,13 @@ def read_mail_turn_motor():
 
     r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/readmail', json = body)
     print(r.text)
+    return render_template('index.html')
+
+@app.route("/turn_on_motor", methods=["POST"])
+def motor_on():
+    GPIO.output(Motor1,GPIO.HIGH)
+    GPIO.output(Motor2,GPIO.LOW)
+    GPIO.output(Motor3,GPIO.HIGH)
     return render_template('index.html')
 
 if __name__ == '__main__':
