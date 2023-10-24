@@ -1,5 +1,5 @@
 function toggleLight() {
-    var e = ".light-toggle-div";
+    const e = ".light-toggle-div";
 
     $(e).toggleClass("off"); // flip mode
     $(e).toggleClass("on"); // flip mode 
@@ -10,33 +10,53 @@ function toggleLight() {
     $("#light-toggle-btn").html(on ? "Light On" : "Light Off");
 } 
 
-var mail_cd_to_set = 15; //based cd, 2mins in second
-var cur_mail_cd = mail_cd_to_set; //the cd that will be reduce
+const mail_cd_to_set = 60; //based cd, 3mins in second
+var cur_mail_cd = 10; //the cd that will be reduce
 var data = {}
+var motorState = false;
 
+// setInterval(() => {
+//     $.post('/read_motor_mail', function(res) {
+//         if (motorState == res.response)
+//             return;
+//         motorState = res.response;
+//         $.post('/set_motor', {state: motorState});
+//     });
+// }, 1000);
 
 setInterval(() => {
     $.get('/get_data', function(res) {
-        pasteData(res); //get data out of callback
+        pasteData(res);
     });
 
     //update data on dashboard
     $("#temp-text").html(data.temp);
     $("#humid-text").html(data.humid);
 
-    $.post('/read_motor_mail');
-    if (data.temp <= 24)
+    $.post('/read_motor_mail', function(res) {
+        if (!res.response)
+            return;
+        if (motorState == res.response)
+            return;
+        motorState = res.response;
+        $.post('/set_motor', {state: motorState})
+    });
         
-    //execute under when timer hit 0
+    // console.log(cur_mail_cd);
+    if (data.temp <= 24) {
+        $.post('/set_motor', {state: 0})
+        motorState = 0
+    }
+
     if (--cur_mail_cd > 0) return;
-    cur_mail_cd = mail_cd_to_set; //reset timer
+    cur_mail_cd = mail_cd_to_set;
 
     if (data.temp > 24) {
         //send mail asking turn on motor if temp > 24
-        // $.post('/send_motor_mail', {temp: data.temp});
+        $.post('/send_motor_mail', {temp: data.temp});
     }
     
-}, 1000); //execute the above every 1s
+}, 1000);
 
 function pasteData(res) {
     data = res

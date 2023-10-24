@@ -25,7 +25,7 @@ mailerApp = mailer.Emailer(server, port, sender, pswd)
 Motor1 = 22 # Enable Pin
 Motor2 = 27 # Input Pin
 Motor3 = 17 # Input Pin
-motorStateOn = False # bool to record motor state, avoiding repeatly set mode
+# bool to record motor state, avoiding repeatly set mode
 
 GPIO.setup(Motor1,GPIO.OUT, initial=0)
 GPIO.setup(Motor2,GPIO.OUT, initial=0)
@@ -43,8 +43,8 @@ def index():
 
 @app.route("/toggle_light", methods=["POST"])
 def toggle_light():
-    # isOn = json.loads(request.form['isOn'])
-    # GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
+    isOn = json.loads(request.form['isOn'])
+    GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
     return render_template('index.html')
 
 @app.route("/get_data", methods=["GET"])
@@ -65,50 +65,37 @@ def send_mail():
 
     sendTo = "ukniot123@outlook.com"
     emailSubject = "Hello from automatic service"
-    emailContent = "The current temperature " + str(temp) + ". Would you like to turn on the fan?"
+    emailContent = "The current temperature is " + str(temp) + ". Would you like to turn on the fan?"
 
     mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return render_template('index.html')
 
 @app.route("/read_motor_mail", methods=["POST"])
-def read_motor_mail():
+def read_motor_mail():        
     #do imap here
     server = "outlook.office365.com" #do not change
     subject = "Re: Hello from automatic service"
     resp = mailerApp.read_mail(server, None, subject)
-    check_motor_resp(resp)
 
-    return render_template('index.html')
+    return {'response': check_motor_resp(resp)}
 
 def check_motor_resp(msg):
     #guard
     if msg is None or msg.lower() != 'yes':
-        return
+        return 0
     # -- turn on motor when "yes"
-    set_motor_on()
-    return
+    return 1
 
-def set_motor_on():
-    #guard: if already on, do nothing
-    if (motorStateOn):
-        return
+@app.route("/set_motor", methods=["POST"])
+def set_motor():
+    state = json.loads(request.form['state'])
+
     GPIO.output(Motor1, 1)
-    GPIO.output(Motor2, 0)
-    GPIO.output(Motor3, 1)
-    motorStateOn = True
-    return
+    GPIO.output(Motor2, state * 0)
+    GPIO.output(Motor3, state * 1)
 
-
-def set_motor_off():
-    #guard: if already off, do nothing
-    if (not motorStateOn):
-        return
-    GPIO.output(Motor1, 1)
-    GPIO.output(Motor2, 0)
-    GPIO.output(Motor3, 0)
-    motorStateOn = False
-    return
+    return '', 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

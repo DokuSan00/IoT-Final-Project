@@ -21,19 +21,17 @@ class Emailer:
         ]
         headers = "\r\n".join(headers)
 
-        #connect server
+        #create new session, connect server
         Emailer.session = smtplib.SMTP(self.server, self.port)
 
         Emailer.session.starttls()
 
-        #Login to Gmail
+        #Login
         Emailer.session.login(self.username, self.password)
 
         #Send Email & Exit
         Emailer.session.sendmail(self.username, recipient, headers + "\r\n\r\n" + content)
         Emailer.session.quit()
-        print(Emailer.session)
-
 
     #handle payload
     def get_body(msg):
