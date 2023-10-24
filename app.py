@@ -4,6 +4,7 @@ import Freenove_DHT as DHT
 import mailer
 import json
 import requests
+import imaplib
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -41,13 +42,13 @@ def index():
 
 @app.route("/toggle_light", methods=["POST"])
 def toggle_light():
-    isOn = json.loads(request.form['isOn'])
-    GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
+    # isOn = json.loads(request.form['isOn'])
+    # GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
     return render_template('index.html')
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    res = {"temp":1,"humid":0}
+    res = {"temp":0,"humid":0}
     try:
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
@@ -65,23 +66,22 @@ def send_mail():
     emailSubject = "Hello from automatic service"
     emailContent = "The current temperature " + str(temp) + ". Would you like to turn on the fan?"
 
-    # mailerApp.sendmail(sendTo, emailSubject, emailContent)   
-
+    mailerApp.sendmail(sendTo, emailSubject, emailContent)   
     # this is api back up if the mailerApp doest works at school (do not erase)  
     #let theem be unrganized for now. will re-organized them later
-    body = {
-        "auth": {
-            "email": sender,
-            "password": pswd,
-            "smtpServer": "smtp.office365.com",
-            "port": 587
-        },
-        "message": {
-            "to": sendTo,
-            "subject": emailSubject,
-            "text": emailContent
-        }
-    }
+    # body = {
+    #     "auth": {
+    #         "email": sender,
+    #         "password": pswd,
+    #         "smtpServer": "smtp.office365.com",
+    #         "port": 587
+    #     },
+    #     "message": {
+    #         "to": sendTo,
+    #         "subject": emailSubject,
+    #         "text": emailContent
+    #     }
+    # }
 
     # r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/sendmail', json = body)
 
@@ -90,28 +90,31 @@ def send_mail():
 @app.route("/read_motor_mail", methods=["POST"])
 def read_mail_turn_motor():
     #do imap here
-
+    server = "outlook.office365.com" #do not change
+    subject = "Re: Hello from automatic service"
+    resp = mailerApp.readmail(server, None, subject)
+    print(resp)
+    
     # back up API, if imap doesnt run
-    body = {
-        "auth": {
-            "email": "ukniot123@outlook.com",
-            "password": "ukniot1029384756",
-            "imapServer": "outlook.office365.com",
-            "port": 993
-        },
-        "filters": {
-            "from": "ukniot123@outlook.com",
-            "subject": "Re - Hello from automatic service",
-            "text": "*"
-        },
-        "options": {
-            "only_unseen": False,
-            "delete_email": False
-        }
-    }
+    # body = {
+    #     "auth": {
+    #         "email": "ukniot123@outlook.com",
+    #         "password": "ukniot1029384756",
+    #         "imapServer": "outlook.office365.com",
+    #         "port": 993
+    #     },
+    #     "filters": {
+    #         "from": "ukniot123@outlook.com",
+    #         "subject": "Re - Hello from automatic service",
+    #         "text": "*"
+    #     },
+    #     "options": {
+    #         "only_unseen": False,
+    #         "delete_email": False
+    #     }
+    # }
 
-    r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/readmail', json = body)
-    print(r.text)
+    # r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/readmail', json = body)
     return render_template('index.html')
 
 @app.route("/turn_on_motor", methods=["POST"])
