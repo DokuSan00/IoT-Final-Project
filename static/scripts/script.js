@@ -11,26 +11,33 @@ function toggleLight() {
 } 
 
 var mail_cd_to_set = 15; //based cd, 2mins in second
-var cur_mail_cd = mail_cd_to_set //the cd that will be reduce
+var cur_mail_cd = mail_cd_to_set; //the cd that will be reduce
+var data = {}
 
-// $.post('/motor_mail', {temp: 24});
-$.post('/read_motor_mail');
+
 setInterval(() => {
-    $.get('/get_data', function(data) {
-        //update data on dashboard
-        $("#temp-text").html(data.temp);
-        $("#humid-text").html(data.humid);
-        
-        // reduce cd, if cd = 0 execute under
-        console.log(cur_mail_cd); //to remove when deloy
-        if (--cur_mail_cd > 0) return;
-
-        cur_mail_cd = mail_cd_to_set; //reset timer
-
-        if (data.temp > 24) {
-            // $.post('/motor_mail', {temp: data.temp});
-        }
-
+    $.get('/get_data', function(res) {
+        pasteData(res); //get data out of callback
     });
+
+    //update data on dashboard
+    $("#temp-text").html(data.temp);
+    $("#humid-text").html(data.humid);
+
+    $.post('/read_motor_mail');
+    if (data.temp <= 24)
+        
+    //execute under when timer hit 0
+    if (--cur_mail_cd > 0) return;
+    cur_mail_cd = mail_cd_to_set; //reset timer
+
+    if (data.temp > 24) {
+        //send mail asking turn on motor if temp > 24
+        // $.post('/send_motor_mail', {temp: data.temp});
+    }
     
 }, 1000); //execute the above every 1s
+
+function pasteData(res) {
+    data = res
+}

@@ -24,7 +24,8 @@ mailerApp = mailer.Emailer(server, port, sender, pswd)
 #set up motor
 Motor1 = 22 # Enable Pin
 Motor2 = 27 # Input Pin
-Motor3 = 17 # Input Pin 
+Motor3 = 17 # Input Pin
+motorStateOn = False # bool to record motor state, avoiding repeatly set mode
 
 GPIO.setup(Motor1,GPIO.OUT, initial=0)
 GPIO.setup(Motor2,GPIO.OUT, initial=0)
@@ -58,7 +59,7 @@ def get_data():
         return res
     return res
 
-@app.route("/motor_mail", methods=["POST"])
+@app.route("/send_motor_mail", methods=["POST"])
 def send_mail():
     temp = json.loads(request.form['temp'])
 
@@ -66,63 +67,48 @@ def send_mail():
     emailSubject = "Hello from automatic service"
     emailContent = "The current temperature " + str(temp) + ". Would you like to turn on the fan?"
 
-    mailerApp.sendmail(sendTo, emailSubject, emailContent)   
-    # this is api back up if the mailerApp doest works at school (do not erase)  
-    #let theem be unrganized for now. will re-organized them later
-    # body = {
-    #     "auth": {
-    #         "email": sender,
-    #         "password": pswd,
-    #         "smtpServer": "smtp.office365.com",
-    #         "port": 587
-    #     },
-    #     "message": {
-    #         "to": sendTo,
-    #         "subject": emailSubject,
-    #         "text": emailContent
-    #     }
-    # }
-
-    # r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/sendmail', json = body)
+    mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return render_template('index.html')
 
 @app.route("/read_motor_mail", methods=["POST"])
-def read_mail_turn_motor():
+def read_motor_mail():
     #do imap here
     server = "outlook.office365.com" #do not change
     subject = "Re: Hello from automatic service"
-    resp = mailerApp.readmail(server, None, subject)
-    print(resp)
-    
-    # back up API, if imap doesnt run
-    # body = {
-    #     "auth": {
-    #         "email": "ukniot123@outlook.com",
-    #         "password": "ukniot1029384756",
-    #         "imapServer": "outlook.office365.com",
-    #         "port": 993
-    #     },
-    #     "filters": {
-    #         "from": "ukniot123@outlook.com",
-    #         "subject": "Re - Hello from automatic service",
-    #         "text": "*"
-    #     },
-    #     "options": {
-    #         "only_unseen": False,
-    #         "delete_email": False
-    #     }
-    # }
+    resp = mailerApp.read_mail(server, None, subject)
+    check_motor_resp(resp)
 
-    # r = requests.post('https://iot-email-proxy-aa5866a0f983.herokuapp.com/readmail', json = body)
     return render_template('index.html')
 
-@app.route("/turn_on_motor", methods=["POST"])
-def motor_on():
-    GPIO.output(Motor1,GPIO.HIGH)
-    GPIO.output(Motor2,GPIO.LOW)
-    GPIO.output(Motor3,GPIO.HIGH)
-    return render_template('index.html')
+def check_motor_resp(msg):
+    #guard
+    if msg is None or msg.lower() != 'yes':
+        return
+    # -- turn on motor when "yes"
+    set_motor_on()
+    return
+
+def set_motor_on():
+    #guard: if already on, do nothing
+    if (motorStateOn):
+        return
+    GPIO.output(Motor1, 1)
+    GPIO.output(Motor2, 0)
+    GPIO.output(Motor3, 1)
+    motorStateOn = True
+    return
+
+
+def set_motor_off():
+    #guard: if already off, do nothing
+    if (not motorStateOn):
+        return
+    GPIO.output(Motor1, 1)
+    GPIO.output(Motor2, 0)
+    GPIO.output(Motor3, 0)
+    motorStateOn = False
+    return
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

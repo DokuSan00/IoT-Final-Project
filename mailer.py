@@ -13,14 +13,6 @@ class Emailer:
         self.username = username
         self.password = password
 
-    #handle payload
-    def get_body(msg):
-        if (msg.is_multipart()):
-            return Emailer.get_body(msg.get_payload(0))
-        else:
-            return msg.get_payload(None, True)
-
-
     def sendmail(self, recipient, subject, content):
         #Create message
         headers = [
@@ -42,39 +34,57 @@ class Emailer:
         Emailer.session.quit()
         print(Emailer.session)
 
-    def readmail(self, server, sender, subject):
-        mail = imaplib.IMAP4_SSL(server) # connect server
-        mail.login(self.username, self.password) #login 
 
-        mail.list()
-        mail.select("inbox")
-        
+    #handle payload
+    def get_body(msg):
+        if (msg.is_multipart()):
+            return Emailer.get_body(msg.get_payload(0))
+        else:
+            return msg.get_payload(None, True)
+
+    def search_mail(mailer, sender, subject):
         #set up filter
         filter = ""
         if (sender != None):
-            filter += 'FROM "' + sender + '"'
-            
+            filter += 'FROM "' + sender + '" ' 
         if (subject != None):
             filter += 'SUBJECT "' + subject + '"'
         
-        if (filter == ""):
+        if (not bool(filter)):
             filter = "ALL"
+
+        resp = mailer.search(None, filter, '(UNSEEN)') # search for mail
+
+        return resp
+
+    def read_mail(self, server, sender, subject):
+        mailer = imaplib.IMAP4_SSL(server) # connect server
+        mailer.login(self.username, self.password) #login 
+
+        mailer.list()
+        mailer.select("inbox", False)
         
-        res, data = mail.search(None, filter) # search for mail
+        status, data = Emailer.search_mail(mailer, sender, subject)
+
+        #set all mails as read (prevent checking same mail)
+        for id in data[0].split():
+            mailer.store(id, '+FLAGS', '\\SEEN')
+
         try:
             #get lastest mail. use try to handle index out of bound error here, lazy way
             latest_id = data[0].split()[-1]
-            #fetch mail
-            res, data = mail.fetch(latest_id, '(RFC822)')
-            #get mail body
-            raw = Emailer.get_body(email.message_from_bytes(data[0][1]))
-            #decode message from bytest to string
-            #get the first line
-            resp = raw.decode('utf-8').splitlines()[0]
-            #return first line
-            return resp
         except:
-            return ""
+            #if error raise => no result => return null
+            return None
+        
+        res, data = mailer.fetch(latest_id, '(RFC822)')
+
+        #get mail body
+        raw = Emailer.get_body(email.message_from_bytes(data[0][1]))
+
+        #decode from bytes to string -> get first line
+        resp = raw.decode('utf-8').splitlines()[0]
+        return resp.strip()
 
 
         
