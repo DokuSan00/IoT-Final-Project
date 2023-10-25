@@ -13,21 +13,21 @@
     <body class="p-3 mb-2 bg-dark text-white">
         <div class="container">
             <div class="row" style="width: 100%;">
-                <div class="left-wrapper col-4 d-flex flex-column mb-3 justify-content-center flex-wrap">
+                <div class="left-wrapper col-5 d-flex flex-column mb-3 justify-content-center">
                     <div class="p-2">
-                        <div class="form-shadow p-4 form-control bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                        <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                             <h3 class="text-white">Humidity</h1>
                             <h4 id="humid-text"class="text-white-50">0</p>
                         </div>
                     </div>
                     <div class="p-2">
-                        <div class="temp-div form-shadow p-4 form-control bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                        <div class="temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                             <h3 class="text-white">Temperature</h1>
                             <h4 id="temp-text"class="text-white-50">0</p>
                         </div>
                     </div>
                     <div class="p-2">
-                        <div class="form-shadow p-4 form-control bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                        <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                             <h3 class="text-white">N/A</h1>
                             <h4 id="temp-text"class="text-white-50">0</p>
                         </div>
@@ -35,11 +35,20 @@
                 </div>
                 <div name="right-wrapper" class="col d-flex flex-column mb-3 justify-content-center flex-wrap">
                     <div class="p-2">
-                        <div class="off light-toggle-div p-4 form-control bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">Light Toggle</h1>
-                            <p class="text-white-50">Controlling the light from website</p>
+                        <div class="off light-toggle-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                            <h3 class="text-white">Light Control</h1>
+                            <p class="text-white-50">Controll/Toggle the light</p>
                             <div class="mx-auto">
                                 <button id="light-toggle-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleLight()">Light Off</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class="off p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                            <h3 class="text-white">Motor Motor</h1>
+                            <p class="text-white-50">Controll/Toggle the light</p>
+                            <div class="mx-auto">
+                                <button id="light-toggle-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="">Motor Off</button>
                             </div>
                         </div>
                     </div>
