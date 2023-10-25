@@ -15,15 +15,6 @@ var cur_mail_cd = 10; //the cd that will be reduce
 var data = {}
 var motorState = false;
 
-// setInterval(() => {
-//     $.post('/read_motor_mail', function(res) {
-//         if (motorState == res.response)
-//             return;
-//         motorState = res.response;
-//         $.post('/set_motor', {state: motorState});
-//     });
-// }, 1000);
-
 setInterval(() => {
     $.get('/get_data', function(res) {
         pasteData(res);
@@ -43,9 +34,11 @@ setInterval(() => {
     });
         
     // console.log(cur_mail_cd);
-    if (data.temp <= 24) {
-        $.post('/set_motor', {state: 0})
-        motorState = 0
+    if (data.temp <= 24) { // turn off motor when temp <= 24
+        if (motorState != 0) {
+            $.post('/set_motor', {state: 0});
+            motorState = 0;
+        }
     }
 
     if (--cur_mail_cd > 0) return;

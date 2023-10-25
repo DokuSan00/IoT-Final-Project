@@ -18,6 +18,7 @@ dht = DHT.DHT(DHTPin)
 server = 'smtp-mail.outlook.com'  #Email Server (don't change!)
 port = 587  #Server Port (don't change!)
 sender = "ukniot123@outlook.com"
+client = "ukniot123@outlook.com"
 pswd =  "ukniot1029384756"
 mailerApp = mailer.Emailer(server, port, sender, pswd)
 
@@ -63,7 +64,7 @@ def get_data():
 def send_mail():
     temp = json.loads(request.form['temp'])
 
-    sendTo = "ukniot123@outlook.com"
+    sendTo = client
     emailSubject = "Hello from automatic service"
     emailContent = "The current temperature is " + str(temp) + ". Would you like to turn on the fan?"
 
@@ -76,7 +77,7 @@ def read_motor_mail():
     #do imap here
     server = "outlook.office365.com" #do not change
     subject = "Re: Hello from automatic service"
-    resp = mailerApp.read_mail(server, None, subject)
+    resp = mailerApp.read_mail(server, client, subject)
 
     return {'response': check_motor_resp(resp)}
 
