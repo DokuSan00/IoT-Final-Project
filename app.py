@@ -42,10 +42,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route("/toggle_light", methods=["POST"])
-def toggle_light():
-    isOn = json.loads(request.form['isOn'])
-    GPIO.output(LED, isOn)  #flip the current state 0->1 | 1->0
+@app.route("/set_light", methods=["POST"])
+def set_light():
+    state = json.loads(request.form['state'])
+    GPIO.output(LED, state)  #flip the current state 0->1 | 1->0
     return render_template('index.html')
 
 @app.route("/get_data", methods=["GET"])

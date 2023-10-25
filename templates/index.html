@@ -10,45 +10,45 @@
         <script src="../static/scripts/script.js"></script>
         <title>DashBoard</title>
     </head>
-    <body class="p-3 mb-2 bg-dark text-white">
+    <body class="p-4 bg-dark text-white ">
         <div class="container">
             <div class="row" style="width: 100%;">
-                <div class="left-wrapper col-5 d-flex flex-column mb-3 justify-content-center">
+                <div name="left-wrapper" class="col-3 d-flex flex-column mb-3 justify-content-center">
                     <div class="p-2">
                         <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">Humidity</h1>
-                            <h4 id="humid-text"class="text-white-50">0</p>
+                            <h3 class="">Humidity</h3>
+                            <h4 id="humid-text"class="text-white-50">0</h4>
                         </div>
                     </div>
                     <div class="p-2">
                         <div class="temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">Temperature</h1>
-                            <h4 id="temp-text"class="text-white-50">0</p>
+                            <h3 class="">Temperature</h3>
+                            <h4 id="temp-text"class="text-white-50">0</h4>
                         </div>
                     </div>
-                    <div class="p-2">
+                    <!-- <div class="p-2">
                         <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">N/A</h1>
-                            <h4 id="temp-text"class="text-white-50">0</p>
+                            <h3 class="">N/A</h3>
+                            <h4 id="temp-text"class="text-white-50">0</h4>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-                <div name="right-wrapper" class="col d-flex flex-column mb-3 justify-content-center flex-wrap">
+                <div name="right-wrapper" class="col-7 d-flex flex-column mb-3 justify-content-center flex-wrap">
                     <div class="p-2">
-                        <div class="off light-toggle-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">Light Control</h1>
-                            <p class="text-white-50">Controll/Toggle the light</p>
+                        <div class="off light-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                            <h3 class="">Light Control</h3>
+                            <p class="text-white-50">Control/Toggle the light</p>
                             <div class="mx-auto">
-                                <button id="light-toggle-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleLight()">Light Off</button>
+                                <button id="light-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('light')">Turn On</button>
                             </div>
                         </div>
                     </div>
                     <div class="p-2">
-                        <div class="off p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <h3 class="text-white">Motor Motor</h1>
-                            <p class="text-white-50">Controll/Toggle the light</p>
+                        <div class="off motor-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                            <h3 class="">Motor Control</h3>
+                            <p class="text-white-50">Control/Toggle the Motor</p>
                             <div class="mx-auto">
-                                <button id="light-toggle-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="">Motor Off</button>
+                                <button id="motor-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('motor')">Turn On</button>
                             </div>
                         </div>
                     </div>
