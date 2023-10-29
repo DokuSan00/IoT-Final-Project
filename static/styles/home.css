@@ -1,31 +1,65 @@
+.form-shadow {
+    box-shadow: 0px 0px 10px 3px #000000ea, 0px 0px 20px 5px #000000cc;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
 .on  {
-    box-shadow: 0px -5px 14px 3px #e7f6ffbe, 0px -4px 13px 6px #77dbff;
+    box-shadow: 0px 0px 10px 3px #e7f6ffbe, 0px 0px 8px 6px #77dbff;
     transition: box-shadow 0.3s ease-in-out;
 }
 
 .off {
-    box-shadow: 0px -3px 10px 4px #000000ea, 0px -3px 15px 3px #000000cc;
+    box-shadow: 0px 0px 10px 4px #000000ea, 0px 0px 15px 3px #000000cc;
     transition: box-shadow 0.2s ease-in-out;
 }
 
-.form-shadow {
-    box-shadow: 0px 0px 10px 3px #000000ea, 0px 0px 20px 5px #000000cc;
+.icon-shadow-on {
+    filter: saturate(500%) contrast(800%) brightness(500%) 
+    invert(80%) sepia(50%) hue-rotate(140deg) drop-shadow(0px 0px 7px #77dbff);
+    
+    transition: filter 0.3s ease-in-out;
 }
 
-.hot-temp{
-    box-shadow: 0px 0px 10px 5px #ff8d4294, 0px 0px 20px 5px #ff0a0acc;
+.icon-shadow-off {
+    transition: filter 0.2s ease-in-out;
 }
 
-.form-control {
+.hot-temp-shadow {
+    box-shadow: 0px 0px 10px 3px #ff8d4294, 0px 0px 8px 6px #ff0a0acc;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.icon-hot-temp-shadow-on{
+    filter: saturate(500%) contrast(800%) brightness(500%) 
+    invert(80%) sepia(50%) hue-rotate(320deg) drop-shadow(0px 0px 5px #ff0a0acc);
+}
+
+.p-4 {
+    width: 100%;
+    min-width: 150px;
+    margin-top: 28px;
+
+}
+
+.p-4 div h3{
+    font-size:  max(100%, min(8vw, 1.65em));
+}
+
+img {
+    width: auto;
     height: 100%;
 }
-.p-2 {
-    width: 100%;
-    min-width: 60%;
-    margin-top: 20px;
+
+.rotate {
+    animation: rotation 1.7s infinite linear;
 }
 
-div h3{
-    word-wrap: break-word;
-    font-size: min(3vw, 1.75em);
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
 }
+

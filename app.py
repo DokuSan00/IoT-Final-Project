@@ -70,14 +70,18 @@ def send_mail():
 
     mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
-    return render_template('index.html')
+    return '', 200
 
 @app.route("/read_motor_mail", methods=["POST"])
 def read_motor_mail():        
     #do imap here
     server = "outlook.office365.com" #do not change
     subject = "Re: Hello from automatic service"
-    resp = mailerApp.read_mail(server, client, subject)
+    resp = None
+    try:
+        resp = mailerApp.read_mail(server, client, subject)
+    except:
+        resp = None
 
     return {'response': check_motor_resp(resp)}
 
@@ -95,7 +99,6 @@ def set_motor():
     GPIO.output(Motor1, 1)
     GPIO.output(Motor2, state * 0)
     GPIO.output(Motor3, state * 1)
-
     return '', 200
 
 if __name__ == '__main__':

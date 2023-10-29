@@ -3,7 +3,6 @@ import imaplib
 import email
 
 class Emailer:
-    session = None
 
     def __init__(self, server, port, username, password):
         #set up stmp server information
@@ -22,16 +21,16 @@ class Emailer:
         headers = "\r\n".join(headers)
 
         #create new session, connect server
-        Emailer.session = smtplib.SMTP(self.server, self.port)
+        session = smtplib.SMTP(self.server, self.port)
 
-        Emailer.session.starttls()
+        session.starttls()
 
         #Login
-        Emailer.session.login(self.username, self.password)
+        session.login(self.username, self.password)
 
         #Send Email & Exit
-        Emailer.session.sendmail(self.username, recipient, headers + "\r\n\r\n" + content)
-        Emailer.session.quit()
+        session.sendmail(self.username, recipient, headers + "\r\n\r\n" + content)
+        session.quit()
 
     #handle payload
     def get_body(msg):
