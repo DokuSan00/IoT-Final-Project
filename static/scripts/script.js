@@ -1,3 +1,4 @@
+var motor_self_turned = false;
 function isManual() {
     motor_self_turned = !motor_self_turned;
 }
@@ -58,7 +59,6 @@ function toggleMode(name) {
 // var cur_mail_cd = 10; //the cd that will be reduce
 var data = {};
 var emailSent = false;
-var motor_self_turned = false;
 
 setInterval(() => {
     $.get('/get_data', function(res) {

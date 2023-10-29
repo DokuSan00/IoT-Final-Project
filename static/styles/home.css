@@ -25,7 +25,7 @@
 }
 
 .hot-temp-shadow {
-    box-shadow: 0px 0px 10px 3px #ff8d4294, 0px 0px 8px 6px #ff0a0acc;
+    box-shadow: 0px 0px 10px 3px #ff9f9fe1, 0px 0px 8px 6px #ff583b;
     transition: box-shadow 0.3s ease-in-out;
 }
 
