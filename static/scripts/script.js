@@ -1,6 +1,6 @@
 var motor_self_turned = false;
 function isManual() {
-    motor_self_turned = !motor_self_turned;
+    motor_self_turned = getMode(properties['motor'][0]) * true;
 }
 
 function setTextMode(id, isOn) {
