@@ -1,4 +1,4 @@
-var motor_self_turned = false;
+let motor_self_turned = false;
 function isManual() {
     motor_self_turned = getMode(properties['motor'][0]) * true;
 }
@@ -21,7 +21,7 @@ function setIconShadow(name) {
     $(name).toggleClass("icon-shadow-on");
 }
 
-var properties = {
+const properties = {
     //div - method - button - icon
     light : [".light-div", "/set_light", "#light-btn", "#light-icon"],
     motor : [".motor-div", "/set_motor", "#motor-btn", "#fan-icon"]
@@ -57,8 +57,8 @@ function toggleMode(name) {
 
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
-var data = {};
-var emailSent = false;
+let data = {};
+let emailSent = false;
 
 setInterval(() => {
     $.get('/get_data', function(res) {
@@ -71,14 +71,14 @@ setInterval(() => {
 
     //other tasks
     motor_state = getMode(properties['motor'][0]);
-    $.post('/read_motor_mail', function(res) {
-        motorState = motor_state;
-        if (!res.response)
-            return;
-        if (motorState == res.response)
-            return;
-        toggleMode('motor');
-    });
+    // $.post('/read_motor_mail', function(res) {
+    //     motorState = motor_state;
+    //     if (!res.response)
+    //         return;
+    //     if (motorState == res.response)
+    //         return;
+    //     toggleMode('motor');
+    // });
 
     if (data.temp <= 24) {
         if (!motor_self_turned) { // turn off motor when temp <= 24
@@ -86,16 +86,16 @@ setInterval(() => {
             if (motorState != 0) {
                 toggleMode('motor');
             }
+            emailSent = false;
         }
-        emailSent == false;
     }
 
     // if (--cur_mail_cd > 0) return;
     // cur_mail_cd = mail_cd_to_set;
-    if (!motorState && !emailSent && data.temp > 24) {
+    if (!motor_state && !emailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
-            $.post('/send_motor_mail', {temp: data.temp});
+            // $.post('/send_motor_mail', {temp: data.temp});
             emailSent = true;
         } catch {
         }
@@ -111,11 +111,29 @@ function setAnimation(name, animation) {
 }
 
 hot = false;
+const maxInvertTemp = 26.5
+const minInvertTemp = 16
+const maxInvert = 80
+const slope = (maxInvertTemp - minInvertTemp) / maxInvert
+
 function toggleHotTempShadow() {
+    const invert = (Math.max(Math.min(data.temp || 0, maxInvertTemp), minInvertTemp) - minInvertTemp) / slope;
+    console.log(invert);
+    
+    $("#temp-icon").css({'filter': 
+        `saturate(500%) 
+        contrast(800%) 
+        brightness(500%) 
+        invert(${parseInt(invert)}%) 
+        sepia(50%) 
+        hue-rotate(320deg) 
+        drop-shadow(0px 0px 5px rgba(255, 10, 10, ${invert/100})`
+    });
+
     if (hot == (data.temp > 24)) return;
     hot = !hot;
     $(".temp-div").toggleClass("hot-temp-shadow");
     
-    $("#temp-icon").toggleClass("icon-shadow-off");
-    $("#temp-icon").toggleClass("icon-hot-temp-shadow-on");
+    // $("#temp-icon").toggleClass("icon-shadow-off");
+    // $("#temp-icon").toggleClass("icon-hot-temp-shadow-on");
 }
