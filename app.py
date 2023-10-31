@@ -50,14 +50,15 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    res = {"temp":0,"humid":0}
+    res = {}
     try:
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
             res["humid"] = dht.humidity
             res["temp"] = dht.temperature
     except:
-        return res
+        return res, 200
+    
     return res
 
 @app.route("/send_motor_mail", methods=["POST"])

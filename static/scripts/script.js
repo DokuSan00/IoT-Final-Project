@@ -57,11 +57,13 @@ function toggleMode(name) {
 
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
-let data = {};
+let data = {temp: 0, humid: 0};
 let emailSent = false;
 
 setInterval(() => {
     $.get('/get_data', function(res) {
+        if (!res)
+            return;
         pasteData(res);
     });
 
@@ -111,20 +113,20 @@ function setAnimation(name, animation) {
 }
 
 hot = false;
-const maxInvertTemp = 30
-const minInvertTemp = 16
+const maxInvertTemp = 26
+const minInvertTemp = 20
 
 const maxInvert = 80
 const tempSlope = (maxInvertTemp - minInvertTemp) / maxInvert
 
 function renderHotTempShadow() {
-    const invert = (clamp(data.temp || 0, minInvertTemp, maxInvertTemp) - minInvertTemp) / tempSlope;
+    const invert = (clamp(data.temp, minInvertTemp, maxInvertTemp) - minInvertTemp) / tempSlope;
     
     $("#temp-icon").css({'filter': 
         `saturate(500%) 
         contrast(800%) 
         brightness(500%) 
-        invert(${Math.max(20, invert)}%) 
+        invert(${invert}%) 
         sepia(50%) 
         hue-rotate(320deg) 
         drop-shadow(0px 0px 5px rgba(255, 10, 10, ${invert/100})`
@@ -140,8 +142,7 @@ const minInvertHumid = 10;
 const humidSlope = (maxInvertHumid - minInvertHumid) / maxInvert;
 
 function renderHumidityShadow() {
-    const invert = (clamp(data.humid || 0, minInvertHumid, maxInvertHumid) - minInvertHumid) / humidSlope;
-    console.log(invert);
+    const invert = (clamp(data.humid, minInvertHumid, maxInvertHumid) - minInvertHumid) / humidSlope;
     $("#humid-icon").css({'filter': 
         `saturate(500%) 
         contrast(800%) 
