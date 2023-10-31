@@ -71,14 +71,14 @@ setInterval(() => {
 
     //other tasks
     motor_state = getMode(properties['motor'][0]);
-    $.post('/read_motor_mail', function(res) {
-        motorState = motor_state;
-        if (!res.response)
-            return;
-        if (motorState == res.response)
-            return;
-        toggleMode('motor');
-    });
+    // $.post('/read_motor_mail', function(res) {
+    //     motorState = motor_state;
+    //     if (!res.response)
+    //         return;
+    //     if (motorState == res.response)
+    //         return;
+    //     toggleMode('motor');
+    // });
 
     if (data.temp <= 24) {
         if (!motor_self_turned) { // turn off motor when temp <= 24
@@ -95,7 +95,7 @@ setInterval(() => {
     if (!motor_state && !emailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
-            $.post('/send_motor_mail', {temp: data.temp});
+            // $.post('/send_motor_mail', {temp: data.temp});
             emailSent = true;
         } catch {
         }
@@ -111,20 +111,20 @@ function setAnimation(name, animation) {
 }
 
 hot = false;
-const maxInvertTemp = 26.5
+const maxInvertTemp = 30
 const minInvertTemp = 16
 
 const maxInvert = 80
 const tempSlope = (maxInvertTemp - minInvertTemp) / maxInvert
 
 function renderHotTempShadow() {
-    const invert = (Math.max(Math.min(data.temp || 0, maxInvertTemp), minInvertTemp) - minInvertTemp) / tempSlope;
+    const invert = (clamp(data.temp || 0, minInvertTemp, maxInvertTemp) - minInvertTemp) / tempSlope;
     
     $("#temp-icon").css({'filter': 
         `saturate(500%) 
         contrast(800%) 
         brightness(500%) 
-        invert(${parseInt(invert)}%) 
+        invert(${Math.max(20, invert)}%) 
         sepia(50%) 
         hue-rotate(320deg) 
         drop-shadow(0px 0px 5px rgba(255, 10, 10, ${invert/100})`
@@ -133,25 +133,26 @@ function renderHotTempShadow() {
     if (hot == (data.temp > 24)) return;
     hot = !hot;
     $(".temp-div").toggleClass("hot-temp-shadow");
-    
-    // $("#temp-icon").toggleClass("icon-shadow-off");
-    // $("#temp-icon").toggleClass("icon-hot-temp-shadow-on");
 }
 
-const maxInvertHumid = 90;
+const maxInvertHumid = 70;
 const minInvertHumid = 10;
 const humidSlope = (maxInvertHumid - minInvertHumid) / maxInvert;
 
 function renderHumidityShadow() {
-    const invert = (Math.max(Math.min(data.humid || 0, maxInvertHumid), minInvertHumid) - minInvertHumid) / humidSlope;
-    
+    const invert = (clamp(data.humid || 0, minInvertHumid, maxInvertHumid) - minInvertHumid) / humidSlope;
+    console.log(invert);
     $("#humid-icon").css({'filter': 
         `saturate(500%) 
         contrast(800%) 
         brightness(500%) 
-        invert(${parseInt(invert)}%) 
+        invert(${((invert > 10) * invert)}%)
         sepia(50%) 
         hue-rotate(120deg) 
         drop-shadow(0px 0px 5px rgba(10, 255, 235, ${invert/100}))`
     });
+}
+
+function clamp(val, min, max) {
+    return Math.max(Math.min(val, max), min);
 }
