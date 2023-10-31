@@ -143,15 +143,15 @@ const minInvertHumid = 10;
 const humidSlope = (maxInvertHumid - minInvertHumid) / maxInvert;
 
 function renderHumidityShadow() {
-    const invert = (Math.max(Math.min(data.temp || 0, maxInvertHumid), minInvertHumid) - minInvertHumid) / humidSlope;
+    const invert = (Math.max(Math.min(data.humid || 0, maxInvertHumid), minInvertHumid) - minInvertHumid) / humidSlope;
     
-    $("#temp-icon").css({'filter': 
+    $("#humid-icon").css({'filter': 
         `saturate(500%) 
         contrast(800%) 
         brightness(500%) 
         invert(${parseInt(invert)}%) 
         sepia(50%) 
-        hue-rotate(320deg) 
+        hue-rotate(120deg) 
         drop-shadow(0px 0px 5px rgba(10, 255, 235, ${invert/100}))`
     });
 }
