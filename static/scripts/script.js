@@ -70,8 +70,9 @@ setInterval(() => {
     $("#humid-text").html(data.humid);
 
     //other tasks
+    motor_state = getMode(properties['motor'][0]);
     $.post('/read_motor_mail', function(res) {
-        motorState = getMode(properties['motor'][0]);
+        motorState = motor_state;
         if (!res.response)
             return;
         if (motorState == res.response)
@@ -81,17 +82,17 @@ setInterval(() => {
 
     if (data.temp <= 24) {
         if (!motor_self_turned) { // turn off motor when temp <= 24
-            motorState = getMode(properties['motor'][0]);
+            motorState = motor_state;
             if (motorState != 0) {
                 toggleMode('motor');
             }
-            emailSent == false;
         }
+        emailSent == false;
     }
 
     // if (--cur_mail_cd > 0) return;
     // cur_mail_cd = mail_cd_to_set;
-    if (!emailSent && data.temp > 24) {
+    if (!motorState && !emailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
             $.post('/send_motor_mail', {temp: data.temp});
