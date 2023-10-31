@@ -67,7 +67,7 @@ setInterval(() => {
 
     //update data on dashboard
     $("#temp-text").html(data.temp); renderHotTempShadow();
-    $("#humid-text").html(data.humid);
+    $("#humid-text").html(data.humid); renderHumidityShadow();
 
     //other tasks
     motor_state = getMode(properties['motor'][0]);
@@ -138,6 +138,20 @@ function renderHotTempShadow() {
     // $("#temp-icon").toggleClass("icon-hot-temp-shadow-on");
 }
 
-function renderHumidityShadow() {
+const maxInvertHumid = 90;
+const minInvertHumid = 10;
+const humidSlope = (maxInvertHumid - minInvertHumid) / maxInvert;
 
+function renderHumidityShadow() {
+    const invert = (Math.max(Math.min(data.temp || 0, maxInvertHumid), minInvertHumid) - minInvertHumid) / humidSlope;
+    
+    $("#temp-icon").css({'filter': 
+        `saturate(500%) 
+        contrast(800%) 
+        brightness(500%) 
+        invert(${parseInt(invert)}%) 
+        sepia(50%) 
+        hue-rotate(320deg) 
+        drop-shadow(0px 0px 5px rgba(10, 255, 235, ${invert/100}))`
+    });
 }
