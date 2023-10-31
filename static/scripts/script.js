@@ -66,19 +66,19 @@ setInterval(() => {
     });
 
     //update data on dashboard
-    $("#temp-text").html(data.temp); toggleHotTempShadow();
+    $("#temp-text").html(data.temp); renderHotTempShadow();
     $("#humid-text").html(data.humid);
 
     //other tasks
     motor_state = getMode(properties['motor'][0]);
-    // $.post('/read_motor_mail', function(res) {
-    //     motorState = motor_state;
-    //     if (!res.response)
-    //         return;
-    //     if (motorState == res.response)
-    //         return;
-    //     toggleMode('motor');
-    // });
+    $.post('/read_motor_mail', function(res) {
+        motorState = motor_state;
+        if (!res.response)
+            return;
+        if (motorState == res.response)
+            return;
+        toggleMode('motor');
+    });
 
     if (data.temp <= 24) {
         if (!motor_self_turned) { // turn off motor when temp <= 24
@@ -95,7 +95,7 @@ setInterval(() => {
     if (!motor_state && !emailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
-            // $.post('/send_motor_mail', {temp: data.temp});
+            $.post('/send_motor_mail', {temp: data.temp});
             emailSent = true;
         } catch {
         }
@@ -113,12 +113,12 @@ function setAnimation(name, animation) {
 hot = false;
 const maxInvertTemp = 26.5
 const minInvertTemp = 16
-const maxInvert = 80
-const slope = (maxInvertTemp - minInvertTemp) / maxInvert
 
-function toggleHotTempShadow() {
-    const invert = (Math.max(Math.min(data.temp || 0, maxInvertTemp), minInvertTemp) - minInvertTemp) / slope;
-    console.log(invert);
+const maxInvert = 80
+const tempSlope = (maxInvertTemp - minInvertTemp) / maxInvert
+
+function renderHotTempShadow() {
+    const invert = (Math.max(Math.min(data.temp || 0, maxInvertTemp), minInvertTemp) - minInvertTemp) / tempSlope;
     
     $("#temp-icon").css({'filter': 
         `saturate(500%) 
@@ -136,4 +136,8 @@ function toggleHotTempShadow() {
     
     // $("#temp-icon").toggleClass("icon-shadow-off");
     // $("#temp-icon").toggleClass("icon-hot-temp-shadow-on");
+}
+
+function renderHumidityShadow() {
+
 }
