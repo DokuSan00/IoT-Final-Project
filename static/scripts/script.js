@@ -57,8 +57,9 @@ function toggleMode(name) {
 
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
-let data = {temp: 0, humid: 0};
-let emailSent = false;
+let data = {temp: 0, light: 0, humid: 0};
+let motorEmailSent = false;
+let lightEmailSent = false;
 
 setInterval(() => {
     $.get('/get_data', function(res) {
@@ -67,11 +68,27 @@ setInterval(() => {
         pasteData(res);
     });
 
+    console.log(data);
+
     //update data on dashboard
     $("#temp-text").html(data.temp); renderHotTempShadow();
     $("#humid-text").html(data.humid); renderHumidityShadow();
+    $("#lightInt-text").html(data.light);
 
-    //other tasks
+    motor_email_handler();
+    light_email_handler();
+
+}, 1000);
+
+function light_email_handler() {
+    if (data.light >= 400) return;
+    lightState = getMode(properties['light'][0]);
+
+    if (lightState) return;
+    toggleMode('light');
+}
+
+function motor_email_handler() {
     motor_state = getMode(properties['motor'][0]);
     // $.post('/read_motor_mail', function(res) {
     //     motorState = motor_state;
@@ -84,25 +101,22 @@ setInterval(() => {
 
     if (data.temp <= 24) {
         if (!motor_self_turned) { // turn off motor when temp <= 24
-            motorState = motor_state;
-            if (motorState != 0) {
+            if (motor_state != 0) {
                 toggleMode('motor');
             }
-            emailSent = false;
+            motorEmailSent = false;
         }
     }
 
-    // if (--cur_mail_cd > 0) return;
-    // cur_mail_cd = mail_cd_to_set;
-    if (!motor_state && !emailSent && data.temp > 24) {
+    if (!motor_state && !motorEmailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
             // $.post('/send_motor_mail', {temp: data.temp});
-            emailSent = true;
+            motorEmailSent = true;
         } catch {
         }
     }
-}, 1000);
+}
 
 function pasteData(res) {
     data = res;
@@ -152,6 +166,14 @@ function renderHumidityShadow() {
         hue-rotate(120deg) 
         drop-shadow(0px 0px 5px rgba(10, 255, 235, ${invert/100}))`
     });
+}
+
+function renderShadow() {
+    
+
+    if (hot == (data.temp > 24)) return;
+    hot = !hot;
+    $(".temp-div").toggleClass("hot-temp-shadow");
 }
 
 function clamp(val, min, max) {

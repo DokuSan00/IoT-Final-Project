@@ -5,6 +5,8 @@ import mailer
 import json
 import requests
 import imaplib
+import paho.mqtt.client as mqtt
+from threading import Thread
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -13,6 +15,23 @@ GPIO.setwarnings(False)
 LED = 12
 DHTPin = 21 #define the pin of DHT11
 dht = DHT.DHT(DHTPin)
+
+#MQTT code
+mqtt_client = mqtt.Client()
+mqtt_client.connect("localhost")
+pResistorTopic = "ESP/pResistor"
+lightIntensity = 0.0
+
+def on_message(client, userdata, msg):
+    global lightIntensity
+    lightIntensity = float(msg.payload.decode())
+
+def on_connect(client, user_data, flags, rc):
+    print("Connected with result code " + str(rc))
+    client.subscribe(pResistorTopic)
+
+mqtt_client.on_message = on_message
+mqtt_client.on_connect = on_connect
 
 #set up emailer server
 server = 'smtp-mail.outlook.com'  #Email Server (don't change!)
@@ -50,7 +69,7 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    res = {}
+    res = {"light": lightIntensity or 0}
     try:
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
@@ -103,4 +122,5 @@ def set_motor():
     return '', 200
 
 if __name__ == '__main__':
+    Thread(target=mqtt_client.loop_forever).start()
     app.run(host='0.0.0.0', debug=True)
