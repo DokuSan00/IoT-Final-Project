@@ -69,24 +69,22 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    res = {"light": lightIntensity or 0}
+    res = {"light": lightIntensity or None}
     try:
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
-            res["humid"] = dht.humidity
-            res["temp"] = dht.temperature
+            res["humid"] = dht.humidity or None
+            res["temp"] = dht.temperature or None
     except:
-        return res, 200
+        pass
     
     return res
 
 @app.route("/send_motor_mail", methods=["POST"])
 def send_mail():
-    temp = json.loads(request.form['temp'])
-
     sendTo = client
-    emailSubject = "Hello from automatic service"
-    emailContent = "The current temperature is " + str(temp) + ". Would you like to turn on the fan?"
+    emailSubject = request.form['subject']
+    emailContent = request.form['content']
 
     mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
@@ -96,7 +94,7 @@ def send_mail():
 def read_motor_mail():        
     #do imap here
     server = "outlook.office365.com" #do not change
-    subject = "Re: Hello from automatic service"
+    subject = "Re: Hello from automatic service - Fans Service"
     resp = None
     try:
         resp = mailerApp.read_mail(server, client, subject)

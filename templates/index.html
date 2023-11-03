@@ -29,10 +29,10 @@
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Humidity</h3>
-                                <h4 id="humid-text"class="text-white-50">0</h4>
+                                <h4 id="humid-text" class="text-white-50">0</h4>
                             </div>
                             <div class="col text-center">
-                                <img id="humid-icon" src="/static/imgs/humid.png">
+                                <img id="humid-icon" class="" src="/static/imgs/humid.png">
                             </div>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                                 <h4 id="lightInt-text"class="text-white-50">0</h4>
                             </div>
                             <div class="col text-center">
-                                <img id="lightInt-icon" src="/static/imgs/lightInt.png">
+                                <img id="lightInt-icon" class="" src="/static/imgs/lightInt.png">
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                     <h3 class="">Light Control</h3>
                                     <p class="text-white-50">Control the light</p>
                                     <div class="mx-auto">
-                                        <button id="light-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('light')">Turn On</button>
+                                        <button id="light-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('light'); isManual('light');">Turn On</button>
                                     </div>
                                 </div>
                                 <div class="col text-center">
@@ -70,7 +70,7 @@
                                     <h3 class="">Fan Control</h3>
                                     <p class="text-white-50">Control the Fan</p>
                                     <div class="mx-auto">
-                                        <button id="motor-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('motor'); isManual();">Turn On</button>
+                                        <button id="motor-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('motor'); isManual('motor');">Turn On</button>
                                     </div>
                                 </div>
                                 <div class="col text-center">

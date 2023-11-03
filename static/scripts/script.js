@@ -1,6 +1,5 @@
-let motor_self_turned = false;
-function isManual() {
-    motor_self_turned = getMode(properties['motor'][0]) * true;
+function isManual(component) {
+    properties[component]['isManual'] = getMode(properties[component][0]) * true;
 }
 
 function setTextMode(id, isOn) {
@@ -22,9 +21,21 @@ function setIconShadow(name) {
 }
 
 const properties = {
-    //div - method - button - icon
-    light : [".light-div", "/set_light", "#light-btn", "#light-icon"],
-    motor : [".motor-div", "/set_motor", "#motor-btn", "#fan-icon"]
+    //div - method - button - icon - isManualState
+    light : {
+        div: ".light-div", 
+        func: "/set_light", 
+        btn: "#light-btn", 
+        icon: "#light-icon", 
+        isManual: false
+    },
+    motor : {
+        div: ".motor-div", 
+        func: "/set_motor", 
+        btn: "#motor-btn", 
+        icon: "#fan-icon", 
+        isManual: false
+    }
 }
 
 function getMode(name) {
@@ -38,19 +49,21 @@ function setDeviceMode(url, newState) {
 function toggleMode(name) {
     const e = properties[name];
 
-    setShadowLight(e[0]);
-    setIconShadow(e[3])
+    //set light + icon render
+    setShadowLight(e['div']);
+    setIconShadow(e['icon'])
 
-    const on = getMode(e[0]);
+    const on = getMode(e['div']);
 
     //set button text
-    setTextMode(e[2], on);
+    setTextMode(e['btn'], on);
 
     //set RPi device mode
-    setDeviceMode(e[1], on);
+    setDeviceMode(e['func'], on);
 
+    //special effect for Fans: rotate 
     if (name == 'motor') {
-        setAnimation(e[3], 'rotate');
+        setAnimation(e['icon'], 'rotate');
     }
 
 }
@@ -71,9 +84,11 @@ setInterval(() => {
     console.log(data);
 
     //update data on dashboard
-    $("#temp-text").html(data.temp); renderHotTempShadow();
-    $("#humid-text").html(data.humid); renderHumidityShadow();
+    $("#temp-text").html(data.temp);
+    $("#humid-text").html(data.humid);
     $("#lightInt-text").html(data.light);
+
+    renderIconShadow();
 
     motor_email_handler();
     light_email_handler();
@@ -81,15 +96,18 @@ setInterval(() => {
 }, 1000);
 
 function light_email_handler() {
+    if (properties['light']['isManual']) return;
     if (data.light >= 400) return;
-    lightState = getMode(properties['light'][0]);
-
+    lightState = getMode(properties['light']['div']);
     if (lightState) return;
-    toggleMode('light');
+    
+    // toggleMode('light');
+
+    //do your code here v
 }
 
 function motor_email_handler() {
-    motor_state = getMode(properties['motor'][0]);
+    motor_state = getMode(properties['motor']['div']);
     // $.post('/read_motor_mail', function(res) {
     //     motorState = motor_state;
     //     if (!res.response)
@@ -100,7 +118,7 @@ function motor_email_handler() {
     // });
 
     if (data.temp <= 24) {
-        if (!motor_self_turned) { // turn off motor when temp <= 24
+        if (!properties['motor']['isManual']) { // turn off motor when temp <= 24
             if (motor_state != 0) {
                 toggleMode('motor');
             }
@@ -111,7 +129,11 @@ function motor_email_handler() {
     if (!motor_state && !motorEmailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
-            // $.post('/send_motor_mail', {temp: data.temp});
+            mailContent = "The current temperature is " + data.temp + ". Would you like to turn on the fan?";
+            // $.post('/send_motor_mail', {
+            //     subject: "Hello from automatic service - Fans Service",
+            //     content: mailContent
+            // });
             motorEmailSent = true;
         } catch {
         }
@@ -119,7 +141,9 @@ function motor_email_handler() {
 }
 
 function pasteData(res) {
-    data = res;
+    data.light = res.light ?? data.light;
+    data.temp = res.temp ?? data.temp;
+    data.humid = res.humid ?? data.humid;
 }
 
 function setAnimation(name, animation) {
@@ -127,49 +151,70 @@ function setAnimation(name, animation) {
 }
 
 hot = false;
-const maxInvertTemp = 26
-const minInvertTemp = 20
+const icons = ['temp', 'humid', 'light'];
+const icon_properties = {
+    maxInvert: 80,
+    temp: {
+        icon: "#temp-icon",
+        func: "getTemp()",
+        minVal: 20,
+        maxVal: 26,
+        hue_rotation: 320,
+        red: 255,
+        green: 10,
+        blue: 10,
+    },
+    humid: {
+        icon: "#humid-icon",
+        func: "getHumid()",
+        minVal: 10, 
+        maxVal: 70,
+        hue_rotation: 120,
+        red: 10,
+        green: 255,
+        blue: 235,
+    },
+    light: {
+        icon: "#lightInt-icon",
+        func: "getLight()",
+        minVal: 100,
+        maxVal: 700,
+        hue_rotation: 10,
+        red: 255,
+        green: 252,
+        blue: 127,
+    }
+};
 
-const maxInvert = 80
-const tempSlope = (maxInvertTemp - minInvertTemp) / maxInvert
-
-function renderHotTempShadow() {
-    const invert = (clamp(data.temp, minInvertTemp, maxInvertTemp) - minInvertTemp) / tempSlope;
-    
-    $("#temp-icon").css({'filter': 
-        `saturate(500%) 
-        contrast(800%) 
-        brightness(500%) 
-        invert(${invert}%) 
-        sepia(50%) 
-        hue-rotate(320deg) 
-        drop-shadow(0px 0px 5px rgba(255, 10, 10, ${invert/100})`
-    });
-
-    if (hot == (data.temp > 24)) return;
-    hot = !hot;
-    $(".temp-div").toggleClass("hot-temp-shadow");
+calcAllSlope();
+function calcAllSlope() {
+    function calcSlope(icon) {
+        prop = icon_properties[icon];
+        icon_properties[icon]['slope'] = (prop['maxVal'] - prop['minVal']) / icon_properties['maxInvert'];
+    }
+    icons.forEach(calcSlope)
 }
 
-const maxInvertHumid = 70;
-const minInvertHumid = 10;
-const humidSlope = (maxInvertHumid - minInvertHumid) / maxInvert;
+function renderIconShadow() {
+    icons.forEach(render);
+    function render(icon) {
+        const prop = icon_properties[icon];
+        const val = eval(prop['func']);
 
-function renderHumidityShadow() {
-    const invert = (clamp(data.humid, minInvertHumid, maxInvertHumid) - minInvertHumid) / humidSlope;
-    $("#humid-icon").css({'filter': 
-        `saturate(500%) 
-        contrast(800%) 
-        brightness(500%) 
-        invert(${((invert > 10) * invert)}%)
-        sepia(50%) 
-        hue-rotate(120deg) 
-        drop-shadow(0px 0px 5px rgba(10, 255, 235, ${invert/100}))`
-    });
-}
+        const invert = (clamp(val, prop['minVal'], prop['maxVal']) - prop['minVal']) / prop['slope'];
 
-function renderShadow() {
-    
+        $(prop['icon']).css({'filter': 
+            `
+            contrast(300%)
+            saturate(500%)
+            invert(${(invert)}%)
+            sepia(80%) 
+            hue-rotate(${prop['hue_rotation']}deg)
+            drop-shadow(0px 0px 5px rgba(${prop['red']}, ${prop['green']}, ${prop['blue']}, ${invert/100 * 1.25}))
+            brightness(${invert * 1.4 / 93})
+            ` 
+        });
+    }
 
     if (hot == (data.temp > 24)) return;
     hot = !hot;
@@ -178,4 +223,16 @@ function renderShadow() {
 
 function clamp(val, min, max) {
     return Math.max(Math.min(val, max), min);
+}
+
+function getTemp() {
+    return data.temp;
+}
+
+function getHumid() {
+    return data.humid;
+}
+
+function getLight() {
+    return data.light;
 }
