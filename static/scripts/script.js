@@ -15,25 +15,25 @@ function setShadowLight(name) {
 
 function setIconShadow(name) {
     if (!name) return;
-    
+
     $(name).toggleClass("icon-shadow-off");
     $(name).toggleClass("icon-shadow-on");
 }
 
 const properties = {
     //div - method - button - icon - isManualState
-    light : {
-        div: ".light-div", 
-        func: "/set_light", 
-        btn: "#light-btn", 
-        icon: "#light-icon", 
+    light: {
+        div: ".light-div",
+        func: "/set_light",
+        btn: "#light-btn",
+        icon: "#light-icon",
         isManual: false
     },
-    motor : {
-        div: ".motor-div", 
-        func: "/set_motor", 
-        btn: "#motor-btn", 
-        icon: "#fan-icon", 
+    motor: {
+        div: ".motor-div",
+        func: "/set_motor",
+        btn: "#motor-btn",
+        icon: "#fan-icon",
         isManual: false
     }
 }
@@ -43,7 +43,7 @@ function getMode(name) {
 }
 
 function setDeviceMode(url, newState) {
-    $.post(url, {state: newState});
+    $.post(url, { state: newState });
 }
 
 function toggleMode(name) {
@@ -70,17 +70,20 @@ function toggleMode(name) {
 
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
-let data = {temp: 0, light: 0, humid: 0};
+let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
+// Function that runs after 1 second
 setInterval(() => {
-    $.get('/get_data', function(res) {
+    //go get resource(route) from app.py named get_data every other second
+    $.get('/get_data', function (res) {
         if (!res)
             return;
         pasteData(res);
     });
 
+    //what data?
     console.log(data);
 
     //update data on dashboard
@@ -88,22 +91,30 @@ setInterval(() => {
     $("#humid-text").html(data.humid);
     $("#lightInt-text").html(data.light);
 
+    //Style?
     renderIconShadow();
 
+    //Not quite understand
     motor_email_handler();
     light_email_handler();
 
 }, 1000);
 
 function light_email_handler() {
+
     if (properties['light']['isManual']) return;
     if (data.light >= 400) return;
     lightState = getMode(properties['light']['div']);
     if (lightState) return;
-    
+
     // toggleMode('light');
 
-    //do your code here v
+    //Getting current date and time
+    var currentdate = new Date();
+    var lightLowEmail = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
+
+    //Send email to say that the light is on
+    
 }
 
 function motor_email_handler() {
@@ -167,7 +178,7 @@ const icon_properties = {
     humid: {
         icon: "#humid-icon",
         func: "getHumid()",
-        minVal: 10, 
+        minVal: 10,
         maxVal: 70,
         hue_rotation: 120,
         red: 10,
@@ -203,16 +214,17 @@ function renderIconShadow() {
 
         const invert = (clamp(val, prop['minVal'], prop['maxVal']) - prop['minVal']) / prop['slope'];
 
-        $(prop['icon']).css({'filter': 
-            `
+        $(prop['icon']).css({
+            'filter':
+                `
             contrast(300%)
             saturate(500%)
             invert(${(invert)}%)
             sepia(80%) 
             hue-rotate(${prop['hue_rotation']}deg)
-            drop-shadow(0px 0px 5px rgba(${prop['red']}, ${prop['green']}, ${prop['blue']}, ${invert/100 * 1.25}))
+            drop-shadow(0px 0px 5px rgba(${prop['red']}, ${prop['green']}, ${prop['blue']}, ${invert / 100 * 1.25}))
             brightness(${invert * 1.4 / 93})
-            ` 
+            `
         });
     }
 
