@@ -74,16 +74,6 @@ let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
-
-const currentdate = new Date();
-const content = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
-
-//Send email to say that the light is on
-$.post('/send_mail', {
-            subject: "Hello from automatic service",
-            content: content
-        });
-
 // Function that runs after 1 second
 setInterval(() => {
     //go get resource(route) from app.py named get_data every other second
@@ -96,7 +86,7 @@ setInterval(() => {
     //what data?
     console.log(data);
 
-    //update data on dashboard
+    //update values of the dashboard
     $("#temp-text").html(data.temp);
     $("#humid-text").html(data.humid);
     $("#lightInt-text").html(data.light);
@@ -106,7 +96,7 @@ setInterval(() => {
 
     //Not quite understand
     motor_email_handler();
-    // light_email_handler();
+    light_email_handler();
 
 }, 1000);
 
@@ -124,10 +114,38 @@ function light_email_handler() {
     var content = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
 
     //Send email to say that the light is on
+    if (lightEmailSent) return;
+    lightEmailSent = !lightEmailSent;
     $.post('/send_mail', {
-                subject: "Hello from automatic service",
-                content: content
-            });
+        subject: "Hello from automatic service",
+        content: content
+    }, function (data, status) {
+        if (status == 'success')
+            showAlert();
+    });
+
+}
+
+function showAlert() {
+    const duration = 3000;
+    const message = "The email has been sent about a turned on light";
+    const type = "dark";
+    const wrapper = document.createElement('div');
+
+    const alertPlaceholder = document.getElementById('alert-notif');
+    const appendAlert = () => {
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} role="alert">`,
+            `   <div>${message}</div>`,
+            '</div>'
+        ].join('');
+        alertPlaceholder.append(wrapper);
+    }
+    appendAlert();
+
+    setTimeout(function () {
+        wrapper.parentNode.removeChild(wrapper);
+    }, duration);
 }
 
 function motor_email_handler() {

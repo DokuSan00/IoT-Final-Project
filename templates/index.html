@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../static/styles/home.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="../static/scripts/script.js"></script>
-        <title>DashBoard</title>
-    </head>
-    <body class="p-4 bg-dark text-white ">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles/home.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>DashBoard</title>
+</head>
+
+<body class="bg-dark">
+    <div id="alert-notif"></div>
+    <div class="p-4 text-white">
         <div class="container">
             <div class="row justify-content-center">
                 <div name="left-wrapper" class="col-md-5">
-                    <div class="temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                    <div
+                        class="temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Temperature</h3>
-                                <h4 id="temp-text"class="text-white-50">0</h4>
+                                <h4 id="temp-text" class="text-white-50">0</h4>
                             </div>
                             <div class="col text-center">
                                 <img id="temp-icon" class="" src="/static/imgs/thermo.png">
-                            </div>  
+                            </div>
                         </div>
                     </div>
                     <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
@@ -40,7 +47,7 @@
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Light Intensity</h3>
-                                <h4 id="lightInt-text"class="text-white-50">0</h4>
+                                <h4 id="lightInt-text" class="text-white-50">0</h4>
                             </div>
                             <div class="col text-center">
                                 <img id="lightInt-icon" class="" src="/static/imgs/lightInt.png">
@@ -50,36 +57,44 @@
                 </div>
                 <div name="separator" class="col-sm-1" style="padding:0px; width:30px"></div>
                 <div name="right-wrapper" class="col-md">
-                        <div class="off light-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <div class="row">
-                                <div class="col-md-7">
-                                    <h3 class="">Light Control</h3>
-                                    <p class="text-white-50">Control the light</p>
-                                    <div class="mx-auto">
-                                        <button id="light-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('light'); isManual('light');">Turn On</button>
-                                    </div>
-                                </div>
-                                <div class="col text-center">
-                                    <img id="light-icon" class="icon-shadow-off" src="/static/imgs/light.png">
+                    <div class="off light-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <h3 class="">Light Control</h3>
+                                <p class="text-white-50">Control the light</p>
+                                <div class="mx-auto">
+                                    <button id="light-btn" type="button"
+                                        class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white"
+                                        onclick="toggleMode('light'); isManual('light');">Turn On</button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="off motor-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                            <div class="row">
-                                <div class="col-md-7">
-                                    <h3 class="">Fan Control</h3>
-                                    <p class="text-white-50">Control the Fan</p>
-                                    <div class="mx-auto">
-                                        <button id="motor-btn" type="button" class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white" onclick="toggleMode('motor'); isManual('motor');">Turn On</button>
-                                    </div>
-                                </div>
-                                <div class="col text-center">
-                                    <img id="fan-icon" class="icon-shadow-off" src="/static/imgs/fan.png">
-                                </div>
+                            <div class="col text-center">
+                                <img id="light-icon" class="icon-shadow-off" src="/static/imgs/light.png">
                             </div>
                         </div>
+                    </div>
+                    <div class="off motor-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <h3 class="">Fan Control</h3>
+                                <p class="text-white-50">Control the Fan</p>
+                                <div class="mx-auto">
+                                    <button id="motor-btn" type="button"
+                                        class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white"
+                                        onclick="toggleMode('motor'); isManual('motor');">Turn On</button>
+                                </div>
+                            </div>
+                            <div class="col text-center">
+                                <img id="fan-icon" class="icon-shadow-off" src="/static/imgs/fan.png">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
+
+    </div>
+    <script src="../static/scripts/script.js"></script>
+</body>
+
 </html>
