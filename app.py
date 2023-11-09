@@ -80,7 +80,7 @@ def get_data():
     
     return res
 
-@app.route("/send_motor_mail", methods=["POST"])
+@app.route("/send_mail", methods=["POST"])
 def send_mail():
     sendTo = client
     emailSubject = request.form['subject']

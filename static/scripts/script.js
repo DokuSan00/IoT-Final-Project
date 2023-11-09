@@ -74,6 +74,16 @@ let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
+
+const currentdate = new Date();
+const content = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
+
+//Send email to say that the light is on
+$.post('/send_mail', {
+            subject: "Hello from automatic service",
+            content: content
+        });
+
 // Function that runs after 1 second
 setInterval(() => {
     //go get resource(route) from app.py named get_data every other second
@@ -96,7 +106,7 @@ setInterval(() => {
 
     //Not quite understand
     motor_email_handler();
-    light_email_handler();
+    // light_email_handler();
 
 }, 1000);
 
@@ -111,10 +121,13 @@ function light_email_handler() {
 
     //Getting current date and time
     var currentdate = new Date();
-    var lightLowEmail = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
+    var content = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
 
     //Send email to say that the light is on
-    
+    $.post('/send_mail', {
+                subject: "Hello from automatic service",
+                content: content
+            });
 }
 
 function motor_email_handler() {
@@ -141,7 +154,7 @@ function motor_email_handler() {
         // send mail asking turn on motor if temp > 24
         try {
             mailContent = "The current temperature is " + data.temp + ". Would you like to turn on the fan?";
-            // $.post('/send_motor_mail', {
+            // $.post('/send_mail', {
             //     subject: "Hello from automatic service - Fans Service",
             //     content: mailContent
             // });
