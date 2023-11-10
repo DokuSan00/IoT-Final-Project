@@ -38,8 +38,14 @@
 .p-4 {
     width: 100%;
     min-width: 150px;
-    margin-top: 28px;
+}
 
+.container .p-4 {
+    margin-top: 28px;
+}
+
+#dash-content .container {
+    margin-top: 5px;
 }
 
 .p-4 div h3{
@@ -53,6 +59,13 @@ img {
 
 .rotate {
     animation: rotation 1.7s infinite linear;
+}
+
+.alert-custom {
+    /* font-size: max(2vw); */
+    font-size: min(5vw, 1.1em);
+    background-color:#6089D5;
+    color:#fff;
 }
 
 @keyframes rotation {

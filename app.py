@@ -24,7 +24,7 @@ lightIntensity = 0.0
 
 def on_message(client, userdata, msg):
     global lightIntensity
-    lightIntensity = float(msg.payload.decode())
+    lightIntensity = float(msg.payload.decode()) or 0.0
 
 def on_connect(client, user_data, flags, rc):
     print("Connected with result code " + str(rc))
@@ -76,7 +76,7 @@ def get_data():
             res["humid"] = dht.humidity or None
             res["temp"] = dht.temperature or None
     except:
-        pass
+        return res
     
     return res
 

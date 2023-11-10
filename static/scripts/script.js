@@ -121,25 +121,20 @@ function light_email_handler() {
         content: content
     }, function (data, status) {
         if (status == 'success')
-            showAlert();
+            showAlert("Note: Light notification email has been sent");
     });
 
 }
 
-function showAlert() {
-    const duration = 3000;
-    const message = "The email has been sent about a turned on light";
-    const type = "dark";
+function showAlert(alertMessage) {
+    const duration = 10000;
+    const message = alertMessage;
     const wrapper = document.createElement('div');
 
-    const alertPlaceholder = document.getElementById('alert-notif');
+    const alertDiv = document.getElementById('alert-notif');
     const appendAlert = () => {
-        wrapper.innerHTML = [
-            `<div class="alert alert-${type} role="alert">`,
-            `   <div>${message}</div>`,
-            '</div>'
-        ].join('');
-        alertPlaceholder.append(wrapper);
+        wrapper.innerHTML = `<div class="alert-custom" role="alert">${message}</div>`;
+        alertDiv.append(wrapper);   
     }
     appendAlert();
 
@@ -198,7 +193,6 @@ const icon_properties = {
     maxInvert: 80,
     temp: {
         icon: "#temp-icon",
-        func: "getTemp()",
         minVal: 20,
         maxVal: 26,
         hue_rotation: 320,
@@ -208,7 +202,6 @@ const icon_properties = {
     },
     humid: {
         icon: "#humid-icon",
-        func: "getHumid()",
         minVal: 10,
         maxVal: 70,
         hue_rotation: 120,
@@ -218,7 +211,6 @@ const icon_properties = {
     },
     light: {
         icon: "#lightInt-icon",
-        func: "getLight()",
         minVal: 100,
         maxVal: 700,
         hue_rotation: 10,
@@ -241,7 +233,7 @@ function renderIconShadow() {
     icons.forEach(render);
     function render(icon) {
         const prop = icon_properties[icon];
-        const val = eval(prop['func']);
+        const val = (icon == 'light') * data.light + (icon == 'temp') * data.temp + (icon == 'humid') * data.humid;
 
         const invert = (clamp(val, prop['minVal'], prop['maxVal']) - prop['minVal']) / prop['slope'];
 
@@ -266,16 +258,4 @@ function renderIconShadow() {
 
 function clamp(val, min, max) {
     return Math.max(Math.min(val, max), min);
-}
-
-function getTemp() {
-    return data.temp;
-}
-
-function getHumid() {
-    return data.humid;
-}
-
-function getLight() {
-    return data.light;
 }
