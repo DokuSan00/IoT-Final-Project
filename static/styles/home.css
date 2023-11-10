@@ -65,7 +65,7 @@ img {
     /* font-size: max(2vw); */
     font-size: min(5vw, 1.1em);
     background-color:#6089D5;
-    color:#fff;
+    color:#fff; 
 }
 
 @keyframes rotation {
