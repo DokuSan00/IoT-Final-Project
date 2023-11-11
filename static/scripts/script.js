@@ -1,5 +1,5 @@
 function isManual(component) {
-    properties[component]['isManual'] = getMode(properties[component][0]) * true;
+    properties[component]['isManual'] = getMode(properties[component]['div']) * true;
 }
 
 function setTextMode(id, isOn) {
@@ -83,8 +83,7 @@ setInterval(() => {
         pasteData(res);
     });
 
-    //what data?
-    console.log(data);
+    // console.log(data);
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -111,7 +110,7 @@ function light_email_handler() {
 
     //Getting current date and time
     var currentdate = new Date();
-    var content = "“The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
+    var content = "The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
 
     //Send email to say that the light is on
     if (lightEmailSent) return;
@@ -145,14 +144,14 @@ function showAlert(alertMessage) {
 
 function motor_email_handler() {
     motor_state = getMode(properties['motor']['div']);
-    // $.post('/read_motor_mail', function(res) {
-    //     motorState = motor_state;
-    //     if (!res.response)
-    //         return;
-    //     if (motorState == res.response)
-    //         return;
-    //     toggleMode('motor');
-    // });
+    $.post('/read_motor_mail', function(res) {
+        motorState = motor_state;
+        if (!res.response)
+            return;
+        if (motorState == res.response)
+            return;
+        toggleMode('motor');
+    });
 
     if (data.temp <= 24) {
         if (!properties['motor']['isManual']) { // turn off motor when temp <= 24
@@ -162,15 +161,14 @@ function motor_email_handler() {
             motorEmailSent = false;
         }
     }
-
     if (!motor_state && !motorEmailSent && data.temp > 24) {
         // send mail asking turn on motor if temp > 24
         try {
             mailContent = "The current temperature is " + data.temp + ". Would you like to turn on the fan?";
-            // $.post('/send_mail', {
-            //     subject: "Hello from automatic service - Fans Service",
-            //     content: mailContent
-            // });
+            $.post('/send_mail', {
+                subject: "Hello from automatic service - Fans Service",
+                content: mailContent
+            });
             motorEmailSent = true;
         } catch {
         }
@@ -239,7 +237,7 @@ function renderIconShadow() {
 
         $(prop['icon']).css({
             'filter':
-                `
+            `
             contrast(300%)
             saturate(500%)
             invert(${(invert)}%)
