@@ -2,24 +2,6 @@ function isManual(component) {
     properties[component]['isManual'] = getMode(properties[component]['div']) * true;
 }
 
-function setTextMode(id, isOn) {
-    $(id).html(isOn ? "Turn Off" : "Turn On");
-}
-
-function setShadowLight(name) {
-    if (!name) return;
-
-    $(name).toggleClass("off"); // flip mode
-    $(name).toggleClass("on") // flip mode
-}
-
-function setIconShadow(name) {
-    if (!name) return;
-
-    $(name).toggleClass("icon-shadow-off");
-    $(name).toggleClass("icon-shadow-on");
-}
-
 const properties = {
     //div - method - button - icon - isManualState
     light: {
@@ -50,13 +32,16 @@ function toggleMode(name) {
     const e = properties[name];
 
     //set light + icon render
-    setShadowLight(e['div']);
-    setIconShadow(e['icon'])
+    $(e['div']).toggleClass("off"); // flip mode
+    $(e['div']).toggleClass("on") // flip mode
+
+    $(e['icon']).toggleClass("icon-shadow-off");
+    $(e['icon']).toggleClass("icon-shadow-on");
 
     const on = getMode(e['div']);
 
     //set button text
-    setTextMode(e['btn'], on);
+    $(e['btn']).html(on ? "Turn Off" : "Turn On");
 
     //set RPi device mode
     setDeviceMode(e['func'], on);
@@ -74,7 +59,7 @@ let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
-// Function that runs after 1 second
+// Do every 0.5s
 setInterval(() => {
     //go get resource(route) from app.py named get_data every other second
     $.get('/get_data', function (res) {
@@ -97,7 +82,7 @@ setInterval(() => {
     motor_email_handler();
     light_email_handler();
 
-}, 1000);
+}, 500)
 
 function light_email_handler() {
 
