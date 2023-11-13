@@ -66,11 +66,10 @@ def get_data():
     try:
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
-            res["humid"] = dht.humidity or None
-            res["temp"] = dht.temperature or None
+            res["humid"] = dht.humidity
+            res["temp"] = dht.temperature
     except:
-        return res
-    
+        pass
     return res
 
 @app.route("/send_mail", methods=["POST"])

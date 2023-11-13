@@ -63,12 +63,8 @@ let lightEmailSent = false;
 setInterval(() => {
     //go get resource(route) from app.py named get_data every other second
     $.get('/get_data', function (res) {
-        if (!res)
-            return;
         pasteData(res);
     });
-
-    // console.log(data);
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -82,7 +78,7 @@ setInterval(() => {
     motor_email_handler();
     light_email_handler();
 
-}, 500)
+}, 1000)
 
 function light_email_handler() {
 
@@ -91,11 +87,9 @@ function light_email_handler() {
     lightState = getMode(properties['light']['div']);
     if (lightState) return;
 
-    // toggleMode('light');
-
     //Getting current date and time
     var currentdate = new Date();
-    var content = "The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " time";
+    var content = "The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " .";
 
     //Send email to say that the light is on
     if (lightEmailSent) return;
@@ -106,6 +100,7 @@ function light_email_handler() {
     }, function (data, status) {
         if (status == 'success')
             showAlert("Note: Light notification email has been sent");
+        toggleMode('light');
     });
 
 }
@@ -161,6 +156,7 @@ function motor_email_handler() {
 }
 
 function pasteData(res) {
+    if(!res) return
     data.light = res.light ?? data.light;
     data.temp = res.temp ?? data.temp;
     data.humid = res.humid ?? data.humid;
