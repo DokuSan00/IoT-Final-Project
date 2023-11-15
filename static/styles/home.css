@@ -40,21 +40,30 @@
     min-width: 150px;
 }
 
-.container .p-4 {
-    margin-top: 28px;
-}
-
-#dash-content .container {
-    margin-top: 5px;
-}
-
-.p-4 div h3{
-    font-size:  max(100%, min(8vw, 1.65em));
+body h3{
+    font-size: max(100%, min(8vw, 1.65em));
 }
 
 img {
     width: auto;
     height: 100%;
+}
+
+#user_icon {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+#user_icon img {
+    object-fit: cover;
+    /* border-radius: 50%; */
+}
+
+.hor-separator {
+    height: 10px;
+    width: 50px;
 }
 
 .rotate {

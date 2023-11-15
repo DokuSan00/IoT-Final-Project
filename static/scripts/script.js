@@ -78,12 +78,14 @@ setInterval(() => {
     motor_email_handler();
     light_email_handler();
 
-}, 1000)
+}, 500)
 
 function light_email_handler() {
-
     if (properties['light']['isManual']) return;
-    if (data.light >= 400) return;
+    if (data.light >= 400) {
+        lightEmailSent = 0;
+        return;
+    }
     lightState = getMode(properties['light']['div']);
     if (lightState) return;
 
@@ -93,15 +95,15 @@ function light_email_handler() {
 
     //Send email to say that the light is on
     if (lightEmailSent) return;
-    lightEmailSent = !lightEmailSent;
-    $.post('/send_mail', {
-        subject: "Hello from automatic service",
-        content: content
-    }, function (data, status) {
-        if (status == 'success')
-            showAlert("Note: Light notification email has been sent");
-        toggleMode('light');
-    });
+    lightEmailSent = 1;
+    // $.post('/send_mail', {
+    //     subject: "Hello from automatic service",
+    //     content: content
+    // }, function (data, status) {
+    //     if (status == 'success')
+    //         showAlert("Note: Light notification email has been sent");
+    //     toggleMode('light');
+    // });
 
 }
 

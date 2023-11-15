@@ -6,12 +6,15 @@ import json
 import paho.mqtt.client as mqtt
 from threading import Thread
 from Data import PINS, MAIL_SERVICE
+from User.Client import Client
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 #setup DHT
 dht = DHT.DHT(PINS['DHTPin'])
+
+client = Client()
 
 #MQTT code
 mqtt_client = mqtt.Client()
@@ -74,13 +77,11 @@ def get_data():
 
 @app.route("/send_mail", methods=["POST"])
 def send_mail():
-
-    print('elo')
     sendTo = client
     emailSubject = request.form['subject']
     emailContent = request.form['content']
 
-    mailerApp.sendmail(sendTo, emailSubject, emailContent)
+    # mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return '', 200
 

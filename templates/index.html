@@ -16,12 +16,58 @@
 
 <body class="bg-dark">
     <div id="alert-notif" style="position: absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; text-align: center;"></div>
-    <div id="dash-content" class="p-5 text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div name="left-wrapper" class="col-md-5">
-                    <div
-                        class="temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+    <div id="dash-content" class="text-white" style="width: 80%; margin: 40px auto">
+        <div class="row justify-content-center">
+            <div name="left-wrapper" class="col-md-3">
+                <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                    <div name="profile">
+                        <div class="" style="text-align: center; border: 1px solid red">
+                            <div class="">
+                                <div class="col" style="border: 1px solid red;">
+                                    <div id="user_icon" style="width: 40%; margin: auto;">
+                                        <img src="/static/imgs/avatar.jpg" styles="">
+                                    </div>
+                                </div>
+                                <div style="height: 10px"></div>
+                                <div class="" style="align-items: center; justify-content: center;">
+                                    <h4 id="user_lable" class="text-white-50">User:</h4>
+                                    <h5 id="user_lable" class="text-white-50">Anonymous</h5>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <hr style="width: 80%; margin: 15px auto;">
+
+                        <div style="height: 15px"></div>
+
+                        <div name="bottom-wrapper" class="" style="">
+                            <div class="row p2" style="width: 70%; margin: auto;">
+                                <button type="button" class="btn btn-block btn-md border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white">
+                                    Edit
+                                </button>
+                            </div>
+
+                            <div style="height: 40px"></div>
+
+                            <form>
+                                <div class="row mb-3">
+                                    <label for="inputPassword3" class="col-sm-7 col-form-label">
+                                        Favorite Temperature:
+                                    </label>
+                                    <div class="col-sm-5">
+                                      <input type="password" class="form-control" id="inputPassword3">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-1' style="width: 35px;"></div>
+            <div name="right-wrapper" class="col-md-7">
+                <div class="row row-cols-auto justify-content-center">
+                    <div class="col-sm temp-div form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Temperature</h3>
@@ -32,7 +78,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+        
+                    <div class="col"></div>
+        
+                    <div class="col-sm form-shadow bg-black p-4 bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Humidity</h3>
@@ -42,8 +91,11 @@
                                 <img id="humid-icon" class="" src="/static/imgs/humid.png">
                             </div>
                         </div>
-                    </div>
-                    <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+                    </div>  
+                </div>
+                <div style="height: 28px"></div>
+                <div class="row row-cols-auto justify-content-center">
+                    <div class="col-sm form-shadow bg-black p-4 bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div class="row">
                             <div class="col-7">
                                 <h3 class="">Light Intensity</h3>
@@ -54,41 +106,20 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div name="separator" class="col-sm-1" style="padding:0px; width:30px"></div>
-                <div name="right-wrapper" class="col-md">
-                    <div class="off light-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
+            
+                    <div class="col"></div>
+                    
+                    <div class="col-sm form-shadow bg-black p-4 bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div class="row">
-                            <div class="col-md-7">
-                                <h3 class="">Light Control</h3>
-                                <p class="text-white-50">Control the light</p>
-                                <div class="mx-auto">
-                                    <button id="light-btn" type="button"
-                                        class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white"
-                                        onclick="toggleMode('light'); isManual('light');">Turn On</button>
-                                </div>
+                            <div class="col-7">
+                                <h3 class="">Bluetooth</h3>
+                                <h4 id="lightInt-text" class="text-white-50">0</h4>
                             </div>
                             <div class="col text-center">
-                                <img id="light-icon" class="icon-shadow-off" src="/static/imgs/light.png">
+                                <img id="lightInt-icon" src="/static/imgs/bluetooth.png">
                             </div>
                         </div>
-                    </div>
-                    <div class="off motor-div p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <h3 class="">Fan Control</h3>
-                                <p class="text-white-50">Control the Fan</p>
-                                <div class="mx-auto">
-                                    <button id="motor-btn" type="button"
-                                        class="btn btn-block btn-lg border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white"
-                                        onclick="toggleMode('motor'); isManual('motor');">Turn On</button>
-                                </div>
-                            </div>
-                            <div class="col text-center">
-                                <img id="fan-icon" class="icon-shadow-off" src="/static/imgs/fan.png">
-                            </div>
-                        </div>
-                    </div>
+                    </div> 
                 </div>
             </div>
         </div>
