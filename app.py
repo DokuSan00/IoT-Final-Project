@@ -17,7 +17,7 @@ dht = DHT.DHT(PINS['DHTPin'])
 mqtt_client = mqtt.Client()
 mqtt_client.connect("localhost")
 pResistorTopic = "ESP/pResistor"
-lightIntensity = 0.0
+lightIntensity = 0.0 
 
 def on_message(client, userdata, msg):
     global lightIntensity
