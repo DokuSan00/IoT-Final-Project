@@ -16,9 +16,9 @@ byte nuidPICC[4];
 String hexRfid;
 
 //credentials for the mqtt server
-const char* ssid = "1010";
-const char* password = "kocopass";
-const char* mqtt_server = "172.20.10.13";
+const char* ssid = "iPhone (44)";
+const char* password = "sukablyat";
+const char* mqtt_server = "172.20.10.2";
 
 
 //Vanier wifi
@@ -97,14 +97,15 @@ void setup() {
   Serial.println();
   Serial.print(F("Reader :"));
   rfid.PCD_DumpVersionToSerial();
+  
   for (byte i = 0; i < 6; i++) {
     key.keyByte[i] = 0xFF;
   }
 
-Serial.println();
-Serial.println(F("This code scan the MIFARE Classic NUID."));
-Serial.print(F("Using the following key:"));
-printHex(key.keyByte, MFRC522::MF_KEY_SIZE);
+  Serial.println();
+  Serial.println(F("This code scan the MIFARE Classic NUID."));
+  Serial.print(F("Using the following key:"));
+  printHex(key.keyByte, MFRC522::MF_KEY_SIZE);
 }
 
 //loop this code
@@ -157,14 +158,14 @@ if (rfid.uid.uidByte[0] != nuidPICC[0] ||
  }
  Serial.println(F("The NUID tag is:"));
  Serial.print(F("In hex: "));
- printHex(rfid.uid.uidByte, rfid.uid.size, hexRfid);
+ printHex(rfid.uid.uidByte, rfid.uid.size);
  Serial.println();
  Serial.print(F("In dec: "));
  printDec(rfid.uid.uidByte, rfid.uid.size);
  Serial.println();
 
  //publish the hex to the mqtt server
- client.publish("rfid_reader", hexRfid);
+// client.publish("rfid_reader");
 }
 else Serial.println(F("Card read previously."));
 // Halt PICC
@@ -176,7 +177,7 @@ rfid.PCD_StopCrypto1();
 /**
  Helper routine to dump a byte array as hex values to Serial.
 */
-void printHex(byte *buffer, byte bufferSize, String hexRfid) {
+void printHex(byte *buffer, byte bufferSize) {
 for (byte i = 0; i < bufferSize; i++) {
  Serial.print(buffer[i] < 0x10 ? " 0" : " ");
  Serial.print(buffer[i], HEX);

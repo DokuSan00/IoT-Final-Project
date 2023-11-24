@@ -1,15 +1,15 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const char* ssid = "1010";
-const char* password = "kocopass";
+const char* ssid = "iPhone (44)";
+const char* password = "sukablyat";
 
 const int pResistor = A0;
 
 String lightInt_str;
 char lightInt[50];
 
-const char* mqtt_server = "172.20.10.9";
+const char* mqtt_server = "172.20.10.2";
 
 WiFiClient vanieriot;
 PubSubClient client(vanieriot);
