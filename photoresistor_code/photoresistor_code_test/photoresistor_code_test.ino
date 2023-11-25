@@ -115,22 +115,8 @@ void loop() {
   int lightIntVal = analogRead(pResistor);
   lightInt_str = String(lightIntVal);
   lightInt_str.toCharArray(lightInt, lightInt_str.length() + 1);
-  
-  //reconnect the client if not connected
-  if (!client.connected()) {
-    reconnect();
-  }
-  
-  if(client.loop()){
 
-    //publish the client topic for photoresistor variables and light variables
-    client.connect("vanieriot");
-    client.publish("ESP/pResistor", lightInt);
-  
-  delay(1000);
-  }
-
-// Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
 if ( ! rfid.PICC_IsNewCardPresent())
  return;
 // Verify if the NUID has been readed
@@ -163,21 +149,39 @@ if (rfid.uid.uidByte[0] != nuidPICC[0] ||
  Serial.print(F("In dec: "));
  printDec(rfid.uid.uidByte, rfid.uid.size);
  Serial.println();
-
- //publish the hex to the mqtt server
-// client.publish("rfid_reader");
 }
 else Serial.println(F("Card read previously."));
 // Halt PICC
 rfid.PICC_HaltA();
 // Stop encryption on PCD
 rfid.PCD_StopCrypto1();
+
+  
+  //reconnect the client if not connected
+  if (!client.connected()) {
+    reconnect();
+  }
+  
+  if(client.loop()){
+
+    //publish the client topic for photoresistor variables and light variables
+    client.connect("vanieriot");
+    client.publish("ESP/pResistor", lightInt);
+    client.publish("rfid_reader", getHex(rfid.uid.uidByte, rfid.uid.size).c_str());
+  
+  delay(1000);
+  }
+
+//reconnect the client if not connected
+  if (!client.connected()) {
+    reconnect();
+  }
 }
 
 /**
  Helper routine to dump a byte array as hex values to Serial.
 */
-void getHex(byte *buffer, byte bufferSize) {
+String getHex(byte *buffer, byte bufferSize) {
  String id = "";
 for (byte i = 0; i < bufferSize; i++) {
  id += buffer[i] < 0x10 ? " 0" : " ";
@@ -186,7 +190,8 @@ for (byte i = 0; i < bufferSize; i++) {
 // Serial.print(buffer[i] < 0x10 ? " 0" : " ");
 // Serial.print(buffer[i], HEX);
  }
- Serial.print(id);
+ return id;
+ //publish the hex to the mqtt server
 }
 /**
  Helper routine to dump a byte array as dec values to Serial.
