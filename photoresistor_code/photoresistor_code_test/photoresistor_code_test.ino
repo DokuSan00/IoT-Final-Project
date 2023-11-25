@@ -67,7 +67,7 @@ void callback(String topic, byte* message, unsigned int length) {
 //Connecting to mqtt server
 void reconnect() {
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.print("\nAttempting MQTT connection...");
     if (client.connect("vanieriot")) {
       Serial.println("connected");
     
@@ -105,7 +105,7 @@ void setup() {
   Serial.println();
   Serial.println(F("This code scan the MIFARE Classic NUID."));
   Serial.print(F("Using the following key:"));
-  printHex(key.keyByte, MFRC522::MF_KEY_SIZE);
+  getHex(key.keyByte, MFRC522::MF_KEY_SIZE);
 }
 
 //loop this code
@@ -158,7 +158,7 @@ if (rfid.uid.uidByte[0] != nuidPICC[0] ||
  }
  Serial.println(F("The NUID tag is:"));
  Serial.print(F("In hex: "));
- printHex(rfid.uid.uidByte, rfid.uid.size);
+ getHex(rfid.uid.uidByte, rfid.uid.size);
  Serial.println();
  Serial.print(F("In dec: "));
  printDec(rfid.uid.uidByte, rfid.uid.size);
@@ -177,19 +177,29 @@ rfid.PCD_StopCrypto1();
 /**
  Helper routine to dump a byte array as hex values to Serial.
 */
-void printHex(byte *buffer, byte bufferSize) {
+void getHex(byte *buffer, byte bufferSize) {
+ String id = "";
 for (byte i = 0; i < bufferSize; i++) {
- Serial.print(buffer[i] < 0x10 ? " 0" : " ");
- Serial.print(buffer[i], HEX);
+ id += buffer[i] < 0x10 ? " 0" : " ";
+ id += String(buffer[i], HEX);
  
+// Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+// Serial.print(buffer[i], HEX);
  }
+ Serial.print(id);
 }
 /**
  Helper routine to dump a byte array as dec values to Serial.
 */
 void printDec(byte *buffer, byte bufferSize) {
+  String id = "";
 for (byte i = 0; i < bufferSize; i++) {
- Serial.print(buffer[i] < 0x10 ? " 0" : " ");
- Serial.print(buffer[i], DEC);
+ 
+ id += buffer[i] < 0x10 ? " 0" : " ";
+ id += String(buffer[i], DEC);
+ 
+// Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+// Serial.print(buffer[i], DEC);
  }
+ Serial.print(id);
 }
