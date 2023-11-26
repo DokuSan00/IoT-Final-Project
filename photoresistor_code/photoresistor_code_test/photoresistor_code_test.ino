@@ -15,10 +15,10 @@ byte nuidPICC[4];
 // String for the hex value of rfid card
 String hexRfid;
 
-//credentials for the mqtt server
-const char* ssid = "iPhone (44)";
-const char* password = "sukablyat";
-const char* mqtt_server = "172.20.10.2";
+//credentials for the mqtt server(broker)
+const char* ssid = "VIDEOTRON4632";
+const char* password = "3R73C9XK3NWFU";
+const char* mqtt_server = "192.168.0.101";
 
 
 //Vanier wifi
@@ -172,10 +172,6 @@ rfid.PCD_StopCrypto1();
   delay(1000);
   }
 
-//reconnect the client if not connected
-  if (!client.connected()) {
-    reconnect();
-  }
 }
 
 /**

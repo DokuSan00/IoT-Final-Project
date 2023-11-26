@@ -1,0 +1,14 @@
+Logging in
+1) Scan the RFID
+2) Match the values of rfid with the ones from the database
+3) If matched, load up all the values from there to dashboard
+4) if not prompt to rescan the rfid
+5) Transfer RFID tag information over the MQTT broker
+6) Connect to the mqtt broker topics
+7) Also, When a tag is read, the system should send an email to mention “ UserX entered at this time”
+
+Task 2)
+1) Find nearby bluetooth devices
+2) read the RSSI of each device
+3) Use rpi to read the data about bluetooth devices
+4) Design a button which updates the number of bluetooth devices nearby

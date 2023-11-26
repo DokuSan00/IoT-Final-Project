@@ -14,13 +14,20 @@ GPIO.setwarnings(False)
 #setup DHT
 dht = DHT.DHT(PINS['DHTPin'])
 
+#set up database
 client = Client()
+# client_data = {"23", "Ali", "dubashev@gmail.com", 21, 21, 400}
+# client.create(client_data)
 
-#MQTT code
+#set up MQTT client
 mqtt_client = mqtt.Client()
 mqtt_client.connect("localhost")
 pResistorTopic = "ESP/pResistor"
 lightIntensity = 0.0 
+
+#MQTT broker
+mqtt_server = "192.168.0.101"; 
+# mqtt_server = "172.168.0.101"; 
 
 def on_message(client, userdata, msg):
     global lightIntensity
@@ -114,5 +121,7 @@ def set_motor():
     return '', 200
 
 if __name__ == '__main__':
+    #Start one thread for mqtt client
     Thread(target=mqtt_client.loop_forever).start()
+    #Start another for the whole application
     app.run(host='0.0.0.0', debug=True)
