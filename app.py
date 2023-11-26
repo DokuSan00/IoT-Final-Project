@@ -22,16 +22,28 @@ client = Client()
 #set up MQTT client
 mqtt_client = mqtt.Client()
 mqtt_client.connect("localhost")
+#Topics
+rfid_topic = "rfid_reader"
 pResistorTopic = "ESP/pResistor"
+
+#User values
+global tag_id, username, tempThreshold, humidityThreshold
 lightIntensity = 0.0 
+tag_id = ""
+username = ""
+tempThreshold = 0.0
+humidityThreshold = 0.0
 
 #MQTT broker
 mqtt_server = "192.168.0.101"; 
 # mqtt_server = "172.168.0.101"; 
 
 def on_message(client, userdata, msg):
+    #set up client credentials
     global lightIntensity
+    #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     lightIntensity = float(msg.payload.decode()) or 0.0
+    tag_id = msg.payload.decode()
 
 def on_connect(client, user_data, flags, rc):
     print("Connected with result code " + str(rc))
