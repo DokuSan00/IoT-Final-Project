@@ -16,9 +16,13 @@ byte nuidPICC[4];
 String hexRfid;
 
 //credentials for the mqtt server(broker)
-const char* ssid = "VIDEOTRON4632";
-const char* password = "3R73C9XK3NWFU";
-const char* mqtt_server = "192.168.0.101";
+//const char* ssid = "VIDEOTRON4632";
+//const char* password = "3R73C9XK3NWFU";
+//const char* mqtt_server = "192.168.0.101";
+
+const char* ssid = "1010";
+const char* password = "kocopass";
+const char* mqtt_server = "172.20.10.9";
 
 
 //Vanier wifi
@@ -117,44 +121,43 @@ void loop() {
   lightInt_str.toCharArray(lightInt, lightInt_str.length() + 1);
 
   // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-if ( ! rfid.PICC_IsNewCardPresent())
- return;
-// Verify if the NUID has been readed
-if ( ! rfid.PICC_ReadCardSerial())
- return;
-Serial.print(F("PICC type: "));
-MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
-Serial.println(rfid.PICC_GetTypeName(piccType));
-// Check is the PICC of Classic MIFARE type
-if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&
- piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
- piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
- Serial.println(F("Your tag is not of type MIFARE Classic."));
- return;
-}
-if (rfid.uid.uidByte[0] != nuidPICC[0] ||
- rfid.uid.uidByte[1] != nuidPICC[1] ||
- rfid.uid.uidByte[2] != nuidPICC[2] ||
- rfid.uid.uidByte[3] != nuidPICC[3] ) {
- Serial.println(F("A new card has been detected."));
- // Store NUID into nuidPICC array
+  if ( ! rfid.PICC_IsNewCardPresent())
+  return;
+  // Verify if the NUID has been readed
+  if ( ! rfid.PICC_ReadCardSerial())
+  return;
+  Serial.print(F("PICC type: "));
+  MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+  Serial.println(rfid.PICC_GetTypeName(piccType));
+  // Check is the PICC of Classic MIFARE type
+  if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&
+  piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
+  piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
+  Serial.println(F("Your tag is not of type MIFARE Classic."));
+  return;
+  }
+  if (rfid.uid.uidByte[0] != nuidPICC[0] ||
+    rfid.uid.uidByte[1] != nuidPICC[1] ||
+    rfid.uid.uidByte[2] != nuidPICC[2] ||
+    rfid.uid.uidByte[3] != nuidPICC[3] ) {
+    Serial.println(F("A new card has been detected."));
+    // Store NUID into nuidPICC array
 
- for (byte i = 0; i < 4; i++) {
-  nuidPICC[i] = rfid.uid.uidByte[i];
- }
- Serial.println(F("The NUID tag is:"));
- Serial.print(F("In hex: "));
- getHex(rfid.uid.uidByte, rfid.uid.size);
- Serial.println();
- Serial.print(F("In dec: "));
- printDec(rfid.uid.uidByte, rfid.uid.size);
- Serial.println();
-}
-else Serial.println(F("Card read previously."));
-// Halt PICC
-rfid.PICC_HaltA();
-// Stop encryption on PCD
-rfid.PCD_StopCrypto1();
+    for (byte i = 0; i < 4; i++) {
+      nuidPICC[i] = rfid.uid.uidByte[i];
+    }
+
+    Serial.println(F("The NUID tag is:"));
+    Serial.print(F("In hex: "));
+    getHex(rfid.uid.uidByte, rfid.uid.size);
+    Serial.println();
+    
+  }
+  else Serial.println(F("Card read previously."));
+    // Halt PICC
+    rfid.PICC_HaltA();
+    // Stop encryption on PCD
+    rfid.PCD_StopCrypto1();
 
   
   //reconnect the client if not connected
@@ -188,19 +191,4 @@ for (byte i = 0; i < bufferSize; i++) {
  }
  return id;
  //publish the hex to the mqtt server
-}
-/**
- Helper routine to dump a byte array as dec values to Serial.
-*/
-void printDec(byte *buffer, byte bufferSize) {
-  String id = "";
-for (byte i = 0; i < bufferSize; i++) {
- 
- id += buffer[i] < 0x10 ? " 0" : " ";
- id += String(buffer[i], DEC);
- 
-// Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-// Serial.print(buffer[i], DEC);
- }
- Serial.print(id);
 }

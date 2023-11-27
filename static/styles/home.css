@@ -44,7 +44,7 @@ body h3{
     font-size: max(100%, min(8vw, 1.65em));
 }
 
-img {
+img, label {
     width: auto;
     height: 100%;
 }

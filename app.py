@@ -29,7 +29,6 @@ dht = DHT.DHT(PINS['DHTPin'])
 client = Client()
 # client_data = {"23", "Ali", "dubashev@gmail.com", 21, 21, 400}
 # client.create(client_data)
-
 mqtt_client = mqtt.Client()
 
 #Topics
@@ -38,7 +37,9 @@ pResistorTopic = "ESP/pResistor"
 
 #User values
 global tag_id, username, tempThreshold, humidityThreshold
-lightIntensity = 0.0 
+lightIntensity = 0.0
+
+client_setting = {'fav_temp': 24, 'fav_humid': 40, 'fav_lightInt': 400}
 tag_id = ""
 username = ""
 tempThreshold = 0.0
@@ -46,24 +47,24 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    mqtt_client.connect("localhost")
+    mqtt_client.connect("172.20.10.9")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
 
 #callback functions for the mqtt client
 def on_message(client, userdata, msg):
     #set up client credentials
-    global lightIntensity
-    print(msg.payload)
+    
+    global tag_id, lightIntensity
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
-        print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
+        # print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
         lightIntensity = float(msg.payload.decode()) or 0.0
+
     elif(msg.topic == rfid_topic):
-        print(f"Received tag: `{msg.payload.decode()}` from `{msg.rfid_topic}` topic")        
+        # print(f"Received tag: `{msg.payload.decode()}` from `{msg.rfid_topic}` topic")        
         tag_id = msg.payload.decode() or ""
-        print(tag_id)
-        login(tag_id)
+        # login(tag_id)
 
 def on_connect(client, user_data, flags, rc):
     print("Connected with result code " + str(rc))
@@ -84,6 +85,7 @@ def login(tag_id):
             tempThreshold = user[3]
             lightIntensityThreshold = user[5]
             print(username, tempThreshold, lightIntensityThreshold)
+
             time = datetime.now(pytz.timezone('America/New_York'))
             currtime = time.strftime("%H:%M") 
             mailerApp.sendmail(mailerApp, client, f"`{username}` entered at this time: `{currtime}`", f"`{username}` entered at this time: `{currtime}`")            
@@ -113,6 +115,8 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
+    print(lightIntensity)
+    print(tag_id)
     res = {"light": lightIntensity or None}
     try:
         chk = dht.readDHT11()

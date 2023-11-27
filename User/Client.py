@@ -6,7 +6,11 @@ class Client:
   #db = "clients.db"
   db = "clients_test.db"
   conn = None
-  c = None  
+  c = None
+
+  default_fav_temp = 24
+  default_fav_humid = 40
+  default_fav_lightInt = 400
 
   def __init__(self):
     if (not Client.conn):
@@ -26,7 +30,22 @@ class Client:
         fav_humid INTEGER,
         fav_light_intensity DECIMAL(6,2)
       )
-      """)    
+      """)
+
+  def login(self, id):
+    user = self.getClient(self, id)
+    if (not user):
+      self.create(self, {
+        'id': id,
+        'username': id,
+        'email': "N/A",
+        'fav_temp': Client.default_fav_temp,
+        'fav_humid': Client.default_fav_humid,
+        'fav_light_intensity': Client.default_fav_lightInt
+      })
+      
+    return self.getClient(self, id)
+
 
   def getClient(self, id):
     sql = "SELECT email, username, fav_temp, fav_humid, fav_light_intensity FROM clients_test WHERE id = :id;"
