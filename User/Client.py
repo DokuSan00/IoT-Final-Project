@@ -35,7 +35,7 @@ class Client:
   def login(self, id):
     # conn = sqlite3.connect(Client.db)
     # c = conn.cursor()
-    user = self.getClient(id, c)
+    user = self.getClient(id, Client.c)
     if (not user):
       self.create({
         'id': id,
@@ -44,9 +44,9 @@ class Client:
         'fav_temp': Client.default_fav_temp,
         'fav_humid': Client.default_fav_humid,
         'fav_light_intensity': Client.default_fav_lightInt
-      }, c)
+      }, Client.c)
       
-    return self.getClient(id, c)
+    return self.getClient(id, Client.c)
 
 
   def getClient(self, id, c):

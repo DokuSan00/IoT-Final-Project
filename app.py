@@ -25,8 +25,6 @@ mailerApp = mailer.Emailer(
 #setup DHT
 dht = DHT.DHT(PINS['DHTPin'])
 
-#set up database
-client = Client()
 # client_data = {"23", "Ali", "dubashev@gmail.com", 21, 21, 400}
 # client.create(client_data)
 mqtt_client = mqtt.Client()
@@ -47,7 +45,8 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    mqtt_client.connect("172.20.10.2")
+    # mqtt_client.connect("172.20.10.2")
+    mqtt_client.connect("192.168.0.119")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
 
@@ -74,6 +73,8 @@ def on_connect(client, user_data, flags, rc):
 def login(tag_id):
     #check the credentials with the rfid
     try:        
+        #set up database
+        client = Client()
         user = client.login(tag_id)
         print(user)
         if not user:
