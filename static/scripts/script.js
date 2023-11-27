@@ -55,13 +55,14 @@ function toggleMode(name) {
 
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
-let data = { temp: 0, light: 0, humid: 0 };
+// here is the data for html
+let data = { temp: 0, light: 0, humid: 0, username: "Noname" };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
 // Do every 0.5s
 setInterval(() => {
-    //go get resource(route) from app.py named get_data every other second
+    //get breadboard data from app.py named get_data every other second, and call pasteData callback function
     $.get('/get_data', function (res) {
         pasteData(res);
     });
@@ -71,12 +72,16 @@ setInterval(() => {
     $("#humid-text").html(data.humid);
     $("#lightInt-text").html(data.light);
 
+    //values of the updateProfileValues
+    $("#user_label2").html(data.username);
+    console.log(data.username);
     //Style?
     renderIconShadow();
 
     //Not quite understand
-    motor_email_handler();
+    // motor_email_handler();
     light_email_handler();
+    updateProfileValues();
 
 }, 500)
 
@@ -162,6 +167,7 @@ function pasteData(res) {
     data.light = res.light ?? data.light;
     data.temp = res.temp ?? data.temp;
     data.humid = res.humid ?? data.humid;
+    data.username = res.username ?? data.username;
 }
 
 function setAnimation(name, animation) {
@@ -239,4 +245,8 @@ function renderIconShadow() {
 
 function clamp(val, min, max) {
     return Math.max(Math.min(val, max), min);
+}
+
+function updateProfileValues(){
+
 }

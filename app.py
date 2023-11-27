@@ -34,7 +34,10 @@ rfid_topic = "rfid_reader"
 pResistorTopic = "ESP/pResistor"
 
 #User values
-global tag_id, username, tempThreshold, humidityThreshold
+global tag_id
+global username 
+global tempThreshold
+global humidityThreshold
 lightIntensity = 0.0
 
 client_setting = {'fav_temp': 24, 'fav_humid': 40, 'fav_lightInt': 400}
@@ -45,8 +48,8 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    # mqtt_client.connect("172.20.10.2")
-    mqtt_client.connect("192.168.0.119")
+    mqtt_client.connect("172.20.10.2")
+    # mqtt_client.connect("192.168.0.119")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
 
@@ -61,7 +64,7 @@ def on_message(client, userdata, msg):
         lightIntensity = float(msg.payload.decode()) or 0.0
 
     elif(msg.topic == rfid_topic):
-        print(f"Received tag: `{msg.payload.decode()}` from `{msg.topic}` topic")        
+        # print(f"Received tag: `{msg.payload.decode()}` from `{msg.topic}` topic")        
         tag_id = msg.payload.decode() or ""
         login(tag_id)
 
@@ -76,20 +79,21 @@ def login(tag_id):
         #set up database
         client = Client()
         user = client.login(tag_id)
-        print(user)
+        # print(user)
         if not user:
             print("No such client exists in database, and the client was not been able to be created")
         else:
             username = user[1]
             tempThreshold = user[3]
-            lightIntensityThreshold = user[4]
-            print(username, tempThreshold, lightIntensityThreshold)
+            lightIntensityThreshold = user[5]
+            print("Logged in as a " + username)
+            # print(username, tempThreshold, lightIntensityThreshold)
 
             time = datetime.now(pytz.timezone('America/New_York'))
             currtime = time.strftime("%H:%M") 
             mailerApp.sendmail(mailClient, f"`{username}` entered at this time: `{currtime}`", f"`{username}` entered at this time: `{currtime}`")            
     finally: 
-        print("The rfid is not correct, try to check if it actually exists")
+        print("The rfid is not correct, rescan it")
 
 #setup motor
 GPIO.setup(PINS['motor1'], GPIO.OUT, initial=0)
@@ -115,9 +119,12 @@ def set_light():
 @app.route("/get_data", methods=["GET"])
 def get_data():
     print(lightIntensity)
-    print(tag_id)
-    res = {"light": lightIntensity or None}
+    # print(tag_id)
+    res = {"light": lightIntensity or None,
+           "username": username or "noUsername"
+           }    
     try:
+        #getting data from breadboard
         chk = dht.readDHT11()
         if (chk is dht.DHTLIB_OK):
             res["humid"] = dht.humidity

@@ -48,7 +48,7 @@ class Client:
 
 
   def getClient(self, id):
-    sql = "SELECT email, username, fav_temp, fav_humid, fav_light_intensity FROM clients_test WHERE id = :id;"
+    sql = "SELECT id, username, email, fav_temp, fav_humid, fav_light_intensity FROM clients_test WHERE id = :id;"
     Client.c.execute(sql, {"id": id})
     return Client.c.fetchone()
 

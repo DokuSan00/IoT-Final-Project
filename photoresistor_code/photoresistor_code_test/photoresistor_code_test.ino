@@ -17,9 +17,9 @@ String hexRfid;
 
 //credentials for the mqtt server(broker)
 //const char* ssid = "VIDEOTRON4632";
-const char* ssid = "TP-Link_2AD8";
-const char* password = "14730078";
-const char* mqtt_server = "192.168.0.119";
+const char* ssid = "iPhone (44)";
+const char* password = "sukablyat";
+const char* mqtt_server = "172.20.10.2";
 
 
 //Vanier wifi
