@@ -33,33 +33,34 @@ class Client:
       """)
 
   def login(self, id):
-    user = self.getClient(self, id)
+    # conn = sqlite3.connect(Client.db)
+    # c = conn.cursor()
+    user = self.getClient(id, c)
     if (not user):
-      self.create(self, {
+      self.create({
         'id': id,
         'username': id,
         'email': "N/A",
         'fav_temp': Client.default_fav_temp,
         'fav_humid': Client.default_fav_humid,
         'fav_light_intensity': Client.default_fav_lightInt
-      })
+      }, c)
       
-    return self.getClient(self, id)
+    return self.getClient(id, c)
 
 
-  def getClient(self, id):
+  def getClient(self, id, c):
     sql = "SELECT email, username, fav_temp, fav_humid, fav_light_intensity FROM clients_test WHERE id = :id;"
-    Client.c.execute(sql, {"id": id})
+    c.execute(sql, {"id": id})
+    return c.fetchone()
 
-    return Client.c.fetchone()
-
-  def create(self, data):
+  def create(self, data, c):
     sql = """
       INSERT INTO clients_test VALUES (:id, :username, :email, :fav_temp, :fav_humid, :fav_light_intensity)
     """
 
-    res = Client.c.execute(sql, data)
-    Client.conn.commit()
+    res = c.execute(sql, data)
+    # Client.conn.commit()
     return res
 
   def update(self, id, data):
