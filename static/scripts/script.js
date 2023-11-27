@@ -56,7 +56,7 @@ function toggleMode(name) {
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
 // here is the data for html
-let data = { temp: 0, light: 0, humid: 0, username: "Noname" };
+let data = { temp: 0, light: 0, humid: 0, username: "" };
 let motorEmailSent = false;
 let lightEmailSent = false;
 
@@ -74,12 +74,12 @@ setInterval(() => {
 
     //values of the updateProfileValues
     $("#user_label2").html(data.username);
-    console.log(data.username);
+
     //Style?
     renderIconShadow();
 
     //Not quite understand
-    // motor_email_handler();
+    motor_email_handler();
     light_email_handler();
     updateProfileValues();
 
@@ -167,7 +167,7 @@ function pasteData(res) {
     data.light = res.light ?? data.light;
     data.temp = res.temp ?? data.temp;
     data.humid = res.humid ?? data.humid;
-    data.username = res.username ?? data.username;
+    data.username = res.username ?? data.username
 }
 
 function setAnimation(name, animation) {

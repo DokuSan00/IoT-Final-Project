@@ -177,4 +177,4 @@ if __name__ == '__main__':
     #Start one thread for mqtt client where it will keep reconnecting
     Thread(target=mqtt_client.loop_forever).start()
     #Start another for the whole application
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', threaded=True, port=5000, processes=1, debug=True)
