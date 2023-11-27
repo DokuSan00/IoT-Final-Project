@@ -30,9 +30,8 @@ client = Client()
 # client_data = {"23", "Ali", "dubashev@gmail.com", 21, 21, 400}
 # client.create(client_data)
 
-#set up MQTT client and connect to the localhost
 mqtt_client = mqtt.Client()
-mqtt_client.connect("localhost")
+
 #Topics
 rfid_topic = "rfid_reader"
 pResistorTopic = "ESP/pResistor"
@@ -45,51 +44,51 @@ username = ""
 tempThreshold = 0.0
 lightIntensityThreshold = 0.0
 
-#MQTT broker
-mqtt_server = "192.168.0.101"; 
-# mqtt_server = "172.168.0.101"; 
+def connectMqtt():
+    #set up MQTT client and connect to the localhost
+    mqtt_client.connect("localhost")
+    mqtt_client.on_message = on_message
+    mqtt_client.on_connect = on_connect
 
 #callback functions for the mqtt client
 def on_message(client, userdata, msg):
     #set up client credentials
     global lightIntensity
+    print(msg.payload)
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
         print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
         lightIntensity = float(msg.payload.decode()) or 0.0
     elif(msg.topic == rfid_topic):
-        print(f"Received tag: `{msg.payload.decode()}` from `{msg.rfid_topic}` topic")
+        print(f"Received tag: `{msg.payload.decode()}` from `{msg.rfid_topic}` topic")        
         tag_id = msg.payload.decode() or ""
+        print(tag_id)
         login(tag_id)
+
+def on_connect(client, user_data, flags, rc):
+    print("Connected with result code " + str(rc))
+    mqtt_client.subscribe(pResistorTopic)
+    mqtt_client.subscribe(rfid_topic)
 
 def login(tag_id):
     #check the credentials with the rfid
     try:
-        client.c.execute("SELECT * FROM users WHERE tag_id = ?", [tag_id])
+        #change the table based on the db
+        client.c.execute("SELECT * FROM clients_test WHERE id = ?", [tag_id])
         user = client.c.fetchone()
         
         if not user:
             print("No such client exists in database, create one if needed")
         else:
             username = user[1]
-            tempThreshold = user[2]
-            lightIntensityThreshold = user[3]
+            tempThreshold = user[3]
+            lightIntensityThreshold = user[5]
             print(username, tempThreshold, lightIntensityThreshold)
-    
             time = datetime.now(pytz.timezone('America/New_York'))
-            currtime = time.strftime("%H:%M")
+            currtime = time.strftime("%H:%M") 
             mailerApp.sendmail(mailerApp, client, f"`{username}` entered at this time: `{currtime}`", f"`{username}` entered at this time: `{currtime}`")            
-    finally:
+    finally: 
         client.c.close()
-    
-
-def on_connect(client, user_data, flags, rc):
-    print("Connected with result code " + str(rc))
-    client.subscribe(pResistorTopic)
-    client.subscribe(rfid_topic)
-
-mqtt_client.on_message = on_message
-mqtt_client.on_connect = on_connect
 
 #setup motor
 GPIO.setup(PINS['motor1'], GPIO.OUT, initial=0)
@@ -163,6 +162,8 @@ def set_motor():
     return '', 200
 
 if __name__ == '__main__':
+    #connec to mqtt
+    connectMqtt()
     #Start one thread for mqtt client where it will keep reconnecting
     Thread(target=mqtt_client.loop_forever).start()
     #Start another for the whole application
