@@ -7,9 +7,20 @@ import paho.mqtt.client as mqtt
 from threading import Thread
 from Data import PINS, MAIL_SERVICE
 from User.Client import Client
+from datetime import datetime
+import pytz
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+
+#set up emailer client and server
+client = "ukniot123@outlook.com"
+mailerApp = mailer.Emailer(
+    MAIL_SERVICE['server'], 
+    MAIL_SERVICE['port'], 
+    MAIL_SERVICE['email'], 
+    MAIL_SERVICE['pswd']
+)
 
 #setup DHT
 dht = DHT.DHT(PINS['DHTPin'])
@@ -19,7 +30,7 @@ client = Client()
 # client_data = {"23", "Ali", "dubashev@gmail.com", 21, 21, 400}
 # client.create(client_data)
 
-#set up MQTT client
+#set up MQTT client and connect to the localhost
 mqtt_client = mqtt.Client()
 mqtt_client.connect("localhost")
 #Topics
@@ -32,34 +43,53 @@ lightIntensity = 0.0
 tag_id = ""
 username = ""
 tempThreshold = 0.0
-humidityThreshold = 0.0
+lightIntensityThreshold = 0.0
 
 #MQTT broker
 mqtt_server = "192.168.0.101"; 
 # mqtt_server = "172.168.0.101"; 
 
+#callback functions for the mqtt client
 def on_message(client, userdata, msg):
     #set up client credentials
     global lightIntensity
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
-    lightIntensity = float(msg.payload.decode()) or 0.0
-    tag_id = msg.payload.decode()
+    if (msg.topic == pResistorTopic):
+        print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
+        lightIntensity = float(msg.payload.decode()) or 0.0
+    elif(msg.topic == rfid_topic):
+        print(f"Received tag: `{msg.payload.decode()}` from `{msg.rfid_topic}` topic")
+        tag_id = msg.payload.decode() or ""
+        login(tag_id)
+
+def login(tag_id):
+    #check the credentials with the rfid
+    try:
+        client.c.execute("SELECT * FROM users WHERE tag_id = ?", [tag_id])
+        user = client.c.fetchone()
+        
+        if not user:
+            print("No such client exists in database, create one if needed")
+        else:
+            username = user[1]
+            tempThreshold = user[2]
+            lightIntensityThreshold = user[3]
+            print(username, tempThreshold, lightIntensityThreshold)
+    
+            time = datetime.now(pytz.timezone('America/New_York'))
+            currtime = time.strftime("%H:%M")
+            mailerApp.sendmail(mailerApp, client, f"`{username}` entered at this time: `{currtime}`", f"`{username}` entered at this time: `{currtime}`")            
+    finally:
+        client.c.close()
+    
 
 def on_connect(client, user_data, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe(pResistorTopic)
+    client.subscribe(rfid_topic)
 
 mqtt_client.on_message = on_message
 mqtt_client.on_connect = on_connect
-
-#set up emailer server
-client = "ukniot123@outlook.com"
-mailerApp = mailer.Emailer(
-    MAIL_SERVICE['server'], 
-    MAIL_SERVICE['port'], 
-    MAIL_SERVICE['email'], 
-    MAIL_SERVICE['pswd']
-)
 
 #setup motor
 GPIO.setup(PINS['motor1'], GPIO.OUT, initial=0)
@@ -133,7 +163,7 @@ def set_motor():
     return '', 200
 
 if __name__ == '__main__':
-    #Start one thread for mqtt client
+    #Start one thread for mqtt client where it will keep reconnecting
     Thread(target=mqtt_client.loop_forever).start()
     #Start another for the whole application
     app.run(host='0.0.0.0', debug=True)
