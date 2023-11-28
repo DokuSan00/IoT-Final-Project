@@ -63,9 +63,9 @@ let lightEmailSent = false;
 // Do every 0.5s
 setInterval(() => {
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
-    $.get('/get_data', function (res) {
-        pasteData(res);
-    });
+    // $.get('/get_data', function (res) {
+    //     pasteData(res);
+    // });
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -73,15 +73,15 @@ setInterval(() => {
     $("#lightInt-text").html(data.light);
 
     //values of the updateProfileValues
-    $("#username_label").html(data.username);
+    // $("#username_label").html(data.username);
 
     //Style?
-    renderIconShadow();
+    // renderIconShadow();
 
-    //Not quite understand
-    motor_email_handler();
-    light_email_handler();
-    updateProfileValues();
+    // //Not quite understand
+    // motor_email_handler();
+    // light_email_handler();
+    // updateProfileValues();
 
 }, 500)
 
