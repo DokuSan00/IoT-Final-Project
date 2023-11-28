@@ -40,7 +40,10 @@ global tempThreshold
 global humidityThreshold
 lightIntensity = 0.0
 
-client_setting = {'fav_temp': 24, 'fav_humid': 40, 'fav_lightInt': 400}
+
+client = Client()
+client_setting = {'username': "Anonymos", 'fav_temp': 24, 'fav_humid': 40, 'fav_lightInt': 400}
+
 tag_id = ""
 username = ""
 tempThreshold = 0.0
@@ -48,52 +51,36 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    mqtt_client.connect("172.20.10.2")
+    mqtt_client.connect("172.20.10.9")
     # mqtt_client.connect("192.168.0.119")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
+    
 
 #callback functions for the mqtt client
-def on_message(client, userdata, msg):
+def on_message(cli, userdata, msg):
     #set up client credentials
-    msg.payload = msg.payload.lstrip()
-    global tag_id, lightIntensity
+    msg.payload = msg.payload.strip()
+
+    global tag_id, lightIntensity, client_setting
+
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
         # print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
         lightIntensity = float(msg.payload.decode()) or 0.0
 
     elif(msg.topic == rfid_topic):
-        # print(f"Received tag: `{msg.payload.decode()}` from `{msg.topic}` topic")        
-        tag_id = msg.payload.decode() or ""
-        login(tag_id)
+        # print(f"Received tag: `{msg.payload.decode()}` from `{msg.topic}` topic")
+        temp = msg.payload.decode()
+        if (tag_id != temp):
+            tag_id = temp
+            client_setting = client.login(tag_id)
+            
 
 def on_connect(client, user_data, flags, rc):
     print("Connected with result code " + str(rc))
     mqtt_client.subscribe(pResistorTopic)
     mqtt_client.subscribe(rfid_topic)
-
-def login(tag_id):
-    #check the credentials with the rfid
-    try:        
-        #set up database
-        client = Client()
-        user = client.login(tag_id)
-        # print(user)
-        if not user:
-            print("No such client exists in database, and the client was not been able to be created")
-        else:
-            username = user[1]
-            tempThreshold = user[3]
-            lightIntensityThreshold = user[5]
-            print("Logged in as a " + username)
-            # print(username, tempThreshold, lightIntensityThreshold)
-
-            time = datetime.now(pytz.timezone('America/New_York'))
-            currtime = time.strftime("%H:%M") 
-            mailerApp.sendmail(mailClient, f"`{username}` entered at this time: `{currtime}`", f"`{username}` entered at this time: `{currtime}`")            
-    finally: 
-        print("The rfid is not correct, rescan it")
 
 #setup motor
 GPIO.setup(PINS['motor1'], GPIO.OUT, initial=0)
@@ -118,10 +105,10 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    print(lightIntensity)
-    # print(tag_id)
+    global client_setting
+    print(client_setting)
     res = {"light": lightIntensity or None,
-           "username": username or "noUsername"
+           "username": client_setting["username"] or "Anonymous"
            }    
     try:
         #getting data from breadboard
@@ -131,6 +118,8 @@ def get_data():
             res["temp"] = dht.temperature
     except:
         pass
+
+    # print(res)
     return res
 
 @app.route("/send_mail", methods=["POST"])

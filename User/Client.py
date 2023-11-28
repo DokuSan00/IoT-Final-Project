@@ -5,23 +5,30 @@ import sqlite3
 class Client:
   #db = "clients.db"
   db = "clients_test.db"
-  conn = None
-  c = None
 
   default_fav_temp = 24
   default_fav_humid = 40
   default_fav_lightInt = 400
 
   def __init__(self):
-    if (not Client.conn):
-      Client.conn = sqlite3.connect(Client.db)
+    conn, c = self.connectDB()
+    #cursor for executing db commands
+    self.setupDB()
 
-#cursor for executing db commands
-    Client.c = Client.conn.cursor()
-    Client.setupDB()
+    c.close
+    conn.close
 
-  def setupDB():
-    Client.c.execute("""
+
+  def connectDB(self):
+    conn = sqlite3.connect(Client.db)
+    c = conn.cursor()
+    return conn, c
+
+
+  def setupDB(self):
+    conn, c = self.connectDB()
+
+    c.execute("""
       CREATE TABLE IF NOT EXISTS clients_test (
         id TEXT,
         username TEXT,
@@ -31,8 +38,13 @@ class Client:
         fav_light_intensity DECIMAL(6,2)
       )
       """)
+    
+    c.close
+    conn.close
 
   def login(self, id):
+    conn, c = self.connectDB()
+
     user = self.getClient(id)
     if (not user):
       self.create({
@@ -48,20 +60,45 @@ class Client:
 
 
   def getClient(self, id):
+    conn, c = self.connectDB()
+
     sql = "SELECT id, username, email, fav_temp, fav_humid, fav_light_intensity FROM clients_test WHERE id = :id;"
-    Client.c.execute(sql, {"id": id})
-    return Client.c.fetchone()
+    
+    c.execute(sql, {"id": id})
+    
+    data = c.fetchone()
+    res = {}
+    res['id'] = data[0]
+    res['username'] = data[1]
+    res['email'] = data[2]
+    res['fav_temp'] = data[3]
+    res['fav_humid'] = data[4]
+    res['fav_light_intensity'] = data[5]
+    
+    c.close
+    conn.close
+
+    return res
 
   def create(self, data):
+    conn, c = self.connectDB()
+
     sql = """
       INSERT INTO clients_test VALUES (:id, :username, :email, :fav_temp, :fav_humid, :fav_light_intensity)
     """
 
-    res = Client.c.execute(sql, data)
-    Client.conn.commit()
+    res = c.execute(sql, data)
+
+    conn.commit()
+
+    c.close
+    conn.close
+
     return res
 
   def update(self, id, data):
+    conn, c = self.connectDB()
+
     sql = """
       UPDATE clients_test
       SET 
@@ -74,4 +111,10 @@ class Client:
       WHERE id = "{}"
     """.format(id)
 
-    return Client.c.execute(sql, data)
+    res = c.execute(sql, data)
+    c.commit()
+
+    c.close
+    conn.close
+
+    return res

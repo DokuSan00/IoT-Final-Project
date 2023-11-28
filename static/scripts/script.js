@@ -73,7 +73,7 @@ setInterval(() => {
     $("#lightInt-text").html(data.light);
 
     //values of the updateProfileValues
-    $("#user_label2").html(data.username);
+    $("#username_label").html(data.username);
 
     //Style?
     renderIconShadow();
@@ -167,7 +167,8 @@ function pasteData(res) {
     data.light = res.light ?? data.light;
     data.temp = res.temp ?? data.temp;
     data.humid = res.humid ?? data.humid;
-    data.username = res.username ?? data.username
+    data.username = res.username ?? data.username;
+    console.log(res);
 }
 
 function setAnimation(name, animation) {
