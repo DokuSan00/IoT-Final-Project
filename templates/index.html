@@ -21,15 +21,14 @@
             <div name="left-wrapper" class="col-md-3">
                 <div name="bottom-left">
                     <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
-                        <div name="profile">
-                            <div class="" style="text-align: center; border: 1px solid red">
+                        <div id="profile">
+                            <hr style="width: 80%; margin: 15px auto;">
+                            <div class="" style="text-align: center;">
                                 <div class="">
-                                    <div style="height: 10px"></div>
-                                    <div class="" style="align-items: center; justify-content: center;">
+                                    <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
                                         <h4 id="user_label" class="text-white-50">User:</h4>
-                                        <h5 id="username_label" class="text-white-50"></h5>
+                                        <input id="username" type="text" class="h5 text-center text-white-50 form-control" value="Anonymous">
                                     </div>
-                                    <div style="height: 10px"></div>
                                 </div>
                             </div>
     
@@ -46,40 +45,43 @@
     
                                 <div style="height: 40px"></div>
     
-                                <form>
-                                    <div class="row mb-3" style="align-items: center; justify-content: center;">
-                                        <label for="" class="col-sm-3 col-form-label">
+                                <div>
+                                    <div class="row md-3">
+                                        <label for="" class="col-sm-2 col-form-label">
                                             Email:
                                         </label>
                                         <div class="col">
-                                          <input type="text" class="form-control" value="N/A">
+                                            <input id="email" type="text" class="form-control text-white text-center" value="N/A">
                                         </div>
                                     </div>
+                                    <div style="height: 10px;"></div>
                                     <div class="row md-3">
                                         <label for="" class="col-sm-8 col-form-label">
-                                            Prefered Temperature: (default)
+                                            Prefered Temperature:
                                         </label>
                                         <div class="col">
-                                          <input type="number" class="form-control" value="24">
+                                            <input id="fav_temp" type="number" class="form-control text-white" value="24">
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div style="height: 10px;"></div>
+                                    <div class="row md-3">
                                         <label for="" class="col-sm-8 col-form-label">
-                                            Prefered Humidity: (default)
+                                            Prefered Humid:
                                         </label>
                                         <div class="col">
-                                          <input type="number" class="form-control" value="40">
+                                            <input id="fav_humid" type="number" class="form-control text-white" value="40">
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div style="height: 10px;"></div>
+                                    <div class="row md-3">
                                         <label for="" class="col-sm-8 col-form-label">
-                                            Prefered Light Intensity: (default)
+                                            Prefered Light Intensity:
                                         </label>
                                         <div class="col">
-                                          <input type="number" class="form-control" value="400">
+                                            <input id="fav_lightInt" type="number" class="form-control text-white" value="400">
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>

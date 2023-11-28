@@ -86,3 +86,21 @@ img, label {
     }
 }
 
+#username {
+    font-size: x-large;
+    font-weight: 500;
+}
+
+#username, .col .form-control{
+    border: 0px solid black;
+    
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#username, .col .form-control:focus {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}

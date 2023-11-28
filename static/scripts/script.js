@@ -1,3 +1,11 @@
+window.onload(() => {
+    
+})
+
+async function get_client() {
+    // client = fetch("/get_data")
+}
+
 function isManual(component) {
     properties[component]['isManual'] = getMode(properties[component]['div']) * true;
 }
@@ -59,6 +67,8 @@ function toggleMode(name) {
 let data = { temp: 0, light: 0, humid: 0, username: "" };
 let motorEmailSent = false;
 let lightEmailSent = false;
+let user_setting = {}
+
 
 // Do every 0.5s
 setInterval(() => {
