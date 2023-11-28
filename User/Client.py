@@ -43,10 +43,9 @@ class Client:
     conn.close
 
   def login(self, id):
-    conn, c = self.connectDB()
-
-    user = self.getClient(id)
-    if (not user):
+    cols, data = self.getClient(id)
+    
+    if (not data):
       self.create({
         'id': id,
         'username': id,
@@ -55,8 +54,9 @@ class Client:
         'fav_humid': Client.default_fav_humid,
         'fav_light_intensity': Client.default_fav_lightInt
       })
-      
-    return self.getClient(id)
+    cols, data = self.getClient(id)
+    
+    return self.convert_data_to_dict(cols, data)
 
 
   def getClient(self, id):
@@ -67,17 +67,18 @@ class Client:
     c.execute(sql, {"id": id})
     
     data = c.fetchone()
-    res = {}
-    res['id'] = data[0]
-    res['username'] = data[1]
-    res['email'] = data[2]
-    res['fav_temp'] = data[3]
-    res['fav_humid'] = data[4]
-    res['fav_light_intensity'] = data[5]
-    
+    cols = c.description
+
     c.close
     conn.close
 
+    return cols, data
+
+  def convert_data_to_dict(self, cols, data):
+    res = {}
+    for i in range(len(data)):
+      res[cols[i][0]] = data[i]
+    
     return res
 
   def create(self, data):

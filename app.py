@@ -42,7 +42,7 @@ lightIntensity = 0.0
 
 
 client = Client()
-client_setting = {'username': "Anonymos", 'fav_temp': 24, 'fav_humid': 40, 'fav_lightInt': 400}
+client_setting = client.login("Anonymous")
 
 tag_id = ""
 username = ""
@@ -63,14 +63,12 @@ def on_message(cli, userdata, msg):
     msg.payload = msg.payload.strip()
 
     global tag_id, lightIntensity, client_setting
-
+    print(msg.payload)
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
-        # print(f"Received `{msg.payload.decode()}` from `{msg.pResistorTopic}` topic")
         lightIntensity = float(msg.payload.decode()) or 0.0
 
     elif(msg.topic == rfid_topic):
-        # print(f"Received tag: `{msg.payload.decode()}` from `{msg.topic}` topic")
         temp = msg.payload.decode()
         if (tag_id != temp):
             tag_id = temp
@@ -105,11 +103,7 @@ def set_light():
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
-    global client_setting
-    print(client_setting)
-    res = {"light": lightIntensity or None,
-           "username": client_setting["username"] or "Anonymous"
-           }    
+    res = {"light": lightIntensity or None, "client_setting": client_setting or None}    
     try:
         #getting data from breadboard
         chk = dht.readDHT11()

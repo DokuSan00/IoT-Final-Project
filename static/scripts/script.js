@@ -1,11 +1,3 @@
-window.onload(() => {
-    
-})
-
-async function get_client() {
-    // client = fetch("/get_data")
-}
-
 function isManual(component) {
     properties[component]['isManual'] = getMode(properties[component]['div']) * true;
 }
@@ -64,40 +56,70 @@ function toggleMode(name) {
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
 // here is the data for html
-let data = { temp: 0, light: 0, humid: 0, username: "" };
+let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
 let lightEmailSent = false;
-let user_setting = {}
 
+let client_setting = {}
 
-// Do every 0.5s
+function set_user(client) {
+    if (JSON.stringify(client) == JSON.stringify(client_setting))
+        return;
+    client_setting = client;
+    update_user_dashboard();
+}
+
+function get_data() {
+    $.get('/get_data', function (res) {
+        pasteData(res);
+        set_user(res.client_setting)
+        showAlert("Welcome!! " + res.username)
+    });
+}
+
+// Do every 1s
 setInterval(() => {
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
-    // $.get('/get_data', function (res) {
-    //     pasteData(res);
-    // });
+    get_data();
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
     $("#humid-text").html(data.humid);
     $("#lightInt-text").html(data.light);
 
-    //values of the updateProfileValues
-    // $("#username_label").html(data.username);
+    renderIconShadow();
 
-    //Style?
-    // renderIconShadow();
-
-    // //Not quite understand
     // motor_email_handler();
     // light_email_handler();
-    // updateProfileValues();
 
-}, 500)
+}, 1000)
+
+
+function update_user_dashboard() {
+    console.log(client_setting);
+    user = document.getElementById('username');
+    temp = document.getElementById('fav_temp');
+    humid = document.getElementById('fav_humid');
+    lightInt = document.getElementById('fav_lightInt');
+    
+    if (user.value != client_setting.username)
+        user.value = client_setting.username
+
+    if (temp.value != client_setting.fav_temp)
+        temp.value = client_setting.fav_temp
+
+    if (humid.value != client_setting.fav_humid)
+        humid.value = client_setting.fav_humid
+
+    if (lightInt.value != client_setting.fav_lightInt)
+        lightInt.value = client_setting.fav_lightInt
+    
+    return;
+}
 
 function light_email_handler() {
     if (properties['light']['isManual']) return;
-    if (data.light >= 400) {
+    if (data.light >= client_setting.fav_lightInt) {
         lightEmailSent = 0;
         return;
     }
@@ -111,19 +133,19 @@ function light_email_handler() {
     //Send email to say that the light is on
     if (lightEmailSent) return;
     lightEmailSent = 1;
-    // $.post('/send_mail', {
-    //     subject: "Hello from automatic service",
-    //     content: content
-    // }, function (data, status) {
-    //     if (status == 'success')
-    //         showAlert("Note: Light notification email has been sent");
-    //     toggleMode('light');
-    // });
+    $.post('/send_mail', {
+        subject: "Hello from automatic service",
+        content: content
+    }, function (data, status) {
+        if (status == 'success')
+            showAlert("Note: Light notification email has been sent");
+        toggleMode('light');
+    });
 
 }
 
 function showAlert(alertMessage) {
-    const duration = 10000;
+    const duration = 10000; //10s
     const message = alertMessage;
     const wrapper = document.createElement('div');
 
@@ -158,7 +180,7 @@ function motor_email_handler() {
             motorEmailSent = false;
         }
     }
-    if (!motor_state && !motorEmailSent && data.temp > 24) {
+    if (!motor_state && !motorEmailSent && data.temp > client_setting.fav_temp) {
         // send mail asking turn on motor if temp > 24
         try {
             mailContent = "The current temperature is " + data.temp + ". Would you like to turn on the fan?";
@@ -177,8 +199,6 @@ function pasteData(res) {
     data.light = res.light ?? data.light;
     data.temp = res.temp ?? data.temp;
     data.humid = res.humid ?? data.humid;
-    data.username = res.username ?? data.username;
-    console.log(res);
 }
 
 function setAnimation(name, animation) {
@@ -256,8 +276,4 @@ function renderIconShadow() {
 
 function clamp(val, min, max) {
     return Math.max(Math.min(val, max), min);
-}
-
-function updateProfileValues(){
-
 }

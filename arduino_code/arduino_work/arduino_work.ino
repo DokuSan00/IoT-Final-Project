@@ -114,7 +114,10 @@ void setup() {
 
 //loop this code
 void loop() {
-
+  if (!client.connected()) {
+    reconnect();
+  }
+  
   //read variables of the light
   int lightIntVal = analogRead(pResistor);
   lightInt_str = String(lightIntVal);
@@ -136,10 +139,7 @@ if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&
  Serial.println(F("Your tag is not of type MIFARE Classic."));
  return;
 }
-if (rfid.uid.uidByte[0] != nuidPICC[0] ||
- rfid.uid.uidByte[1] != nuidPICC[1] ||
- rfid.uid.uidByte[2] != nuidPICC[2] ||
- rfid.uid.uidByte[3] != nuidPICC[3] ) {
+
  Serial.println(F("A new card has been detected."));
  // Store NUID into nuidPICC array
 
@@ -153,8 +153,7 @@ if (rfid.uid.uidByte[0] != nuidPICC[0] ||
  Serial.print(F("In dec: "));
  printDec(rfid.uid.uidByte, rfid.uid.size);
  Serial.println();
-}
-else Serial.println(F("Card read previously."));
+
 // Halt PICC
 rfid.PICC_HaltA();
 // Stop encryption on PCD
@@ -162,9 +161,6 @@ rfid.PCD_StopCrypto1();
 
   
   //reconnect the client if not connected
-  if (!client.connected()) {
-    reconnect();
-  }
   
   if(client.loop()){
 
