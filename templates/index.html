@@ -16,19 +16,31 @@
 
 <body class="bg-dark">
     <div id="alert-notif" style="position: absolute; margin-left: auto; margin-right: auto; top: 0; left: 0; right: 0; text-align: center;"></div>
-    <div id="dash-content" class="text-white" style="width: 80%; margin: auto; margin-top: 70px;">
-        <div class="row justify-content-center">
-            <div name="left-wrapper" class="col-md-3">
-                <div id="top-left" name="top-left">
+    <div id="dash-content" class="text-white" style="width: 80%; height: 100%; margin: auto; margin-top: 70px;">
+        <div class="row justify-content-center" style="">
+            <div name="left-wrapper" class="col-md-3" style="">
+                <div id="top-left" name="top-left" style="">
+                    <hr class="text-white">
                     <div class="" style="text-align: center;">
+                        <div class="">
+                            <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
+                                <h4 id="date-label" class="text-white-50">Current Date</h4>
+                                <h4 id="date-text" class="text-white-50">--:--:--</h4>
+                            </div>
+                        </div>
+                        <div style="height: 10px"></div>
                         <div class="">
                             <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
                                 <h4 id="time-label" class="text-white-50">Current Time</h4>
                                 <h4 id="time-text" class="text-white-50">--:--:--</h4>
                             </div>
                         </div>
+                        <hr class="text-white">
                     </div>
                 </div>
+
+                <div style="height: 30px"></div>
+
                 <div name="bottom-left">
                     <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div id="profile">
@@ -57,8 +69,8 @@
     
                                 <div>
                                     <div class="row md-3">
-                                        <label for="" class="col-sm-2 col-form-label">
-                                            Email:
+                                        <label class="col-sm-5 col-form-label">
+                                            Custom Email:
                                         </label>
                                         <div class="col">
                                             <input id="email" type="text" class="form-control text-white text-center" value="N/A">
@@ -66,7 +78,7 @@
                                     </div>
                                     <div style="height: 10px;"></div>
                                     <div class="row md-3">
-                                        <label for="" class="col-sm-8 col-form-label">
+                                        <label class="col-sm-8 col-form-label">
                                             Prefered Temperature:
                                         </label>
                                         <div class="col">
@@ -75,7 +87,7 @@
                                     </div>
                                     <div style="height: 10px;"></div>
                                     <div class="row md-3">
-                                        <label for="" class="col-sm-8 col-form-label">
+                                        <label class="col-sm-8 col-form-label">
                                             Prefered Humid:
                                         </label>
                                         <div class="col">
@@ -84,7 +96,7 @@
                                     </div>
                                     <div style="height: 10px;"></div>
                                     <div class="row md-3">
-                                        <label for="" class="col-sm-8 col-form-label">
+                                        <label class="col-sm-8 col-form-label">
                                             Prefered Light Intensity:
                                         </label>
                                         <div class="col">

@@ -61,18 +61,29 @@ let motorEmailSent = false;
 let lightEmailSent = false;
 
 let client_setting = {}
-let currentdate = new Date();
 let currentTime = "--:--:--"
 
-function update_Time() {
-    const hr = `${currentdate.getUTCHours()}`;
-    const mi = `${currentdate.getUTCMinutes()}`;
-    const sc = `${currentdate.getUTCSeconds()}`;
+function get_date() {
+    return new Date();
+}
 
-    console.log(hr.length);
-    // currentTime = `${hr}:${mi}:${sc}`
-    currentTime = `${hr.padStart(2 - hr.length, '0')}:${mi.padStart(2 - mi.length, '0')}:${sc.padStart(2 - sc.length, '0')}`;
+function update_dashboard_time() {
+    date = get_date()
+    const pad = 2;
+    const hr = date.getUTCHours().toString();
+    const mi = date.getUTCMinutes().toString();
+    const sc = date.getUTCSeconds().toString();
+
+    const day = date.getDate();
+    const month = date.getMonth()+1;
+    const year = date.getFullYear();
+
+    currentTime = `
+        ${hr.padStart(pad, '0')}:${mi.padStart(pad, '0')}:${sc.padStart(pad, '0')}
+    `;
     $("#time-text").html(currentTime);
+
+    $("#date-text").html(`${day}-${month}-${year}`);
 }
 
 function set_user(client) {
@@ -92,7 +103,7 @@ function get_data() {
 
 // Do every 1s
 setInterval(() => {
-    update_Time()
+    update_dashboard_time()
 
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
     // get_data();
@@ -111,24 +122,11 @@ setInterval(() => {
 
 
 function update_user_dashboard() {
-    console.log(client_setting);
-    user = document.getElementById('username');
-    temp = document.getElementById('fav_temp');
-    humid = document.getElementById('fav_humid');
-    lightInt = document.getElementById('fav_lightInt');
-    
-    if (user.value != client_setting.username)
-        user.value = client_setting.username
+    document.getElementById('username').value = client_setting.username;
+    document.getElementById('fav_temp').value = client_setting.fav_temp;
+    document.getElementById('fav_humid').value = client_setting.fav_humid;
+    document.getElementById('fav_lightInt').value = client_setting.fav_lightInt;
 
-    if (temp.value != client_setting.fav_temp)
-        temp.value = client_setting.fav_temp
-
-    if (humid.value != client_setting.fav_humid)
-        humid.value = client_setting.fav_humid
-
-    if (lightInt.value != client_setting.fav_lightInt)
-        lightInt.value = client_setting.fav_lightInt
-    
     return;
 }
 
