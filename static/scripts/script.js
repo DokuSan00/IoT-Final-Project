@@ -61,6 +61,19 @@ let motorEmailSent = false;
 let lightEmailSent = false;
 
 let client_setting = {}
+let currentdate = new Date();
+let currentTime = "--:--:--"
+
+function update_Time() {
+    const hr = `${currentdate.getUTCHours()}`;
+    const mi = `${currentdate.getUTCMinutes()}`;
+    const sc = `${currentdate.getUTCSeconds()}`;
+
+    console.log(hr.length);
+    // currentTime = `${hr}:${mi}:${sc}`
+    currentTime = `${hr.padStart(2 - hr.length, '0')}:${mi.padStart(2 - mi.length, '0')}:${sc.padStart(2 - sc.length, '0')}`;
+    $("#time-text").html(currentTime);
+}
 
 function set_user(client) {
     if (JSON.stringify(client) == JSON.stringify(client_setting))
@@ -79,8 +92,10 @@ function get_data() {
 
 // Do every 1s
 setInterval(() => {
+    update_Time()
+
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
-    get_data();
+    // get_data();
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -127,8 +142,7 @@ function light_email_handler() {
     if (lightState) return;
 
     //Getting current date and time
-    var currentdate = new Date();
-    var content = "The Light is ON at " + currentdate.getHours() + ":" + currentdate.getMinutes() + " .";
+    var content = "The Light is ON at " + currentTime;
 
     //Send email to say that the light is on
     if (lightEmailSent) return;

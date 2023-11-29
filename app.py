@@ -41,10 +41,10 @@ global humidityThreshold
 lightIntensity = 0.0
 
 
+tag_id = "Default"
 client = Client()
-client_setting = client.login("Anonymous")
+client_setting = client.login("tag_id")
 
-tag_id = ""
 username = ""
 tempThreshold = 0.0
 lightIntensityThreshold = 0.0
@@ -63,7 +63,6 @@ def on_message(cli, userdata, msg):
     msg.payload = msg.payload.strip()
 
     global tag_id, lightIntensity, client_setting
-    print(msg.payload)
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
         lightIntensity = float(msg.payload.decode()) or 0.0
@@ -73,6 +72,13 @@ def on_message(cli, userdata, msg):
         if (tag_id != temp):
             tag_id = temp
             client_setting = client.login(tag_id)
+            mailerApp.sendmail(mailClient
+            """
+                Welcome! User {} has join {}!
+            """.format(client_setting.username, str(datetime.now())), 
+            """
+                This is automatic mail from automatic servive.
+            """)
             
 
 def on_connect(client, user_data, flags, rc):
