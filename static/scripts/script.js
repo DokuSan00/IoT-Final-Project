@@ -65,12 +65,13 @@ function update_client_setting() {
     let lightVal = document.getElementById('fav_lightInt').value;
 
     is_client_updating(true);
-    $.post("/update_client", { username: user, temp: tempVal, humid: humidVal, light: lightVal }, function(res) {
-        is_client_updating(false);
-        if (res == 200)
+    $.post("/update_client", { username: user, temp: tempVal, humid: humidVal, light: lightVal }, function(res, status) {
+        if (parseInt(res))
             showAlert('Updated Successfull');
         else
-            showAlert('Updated Failed')
+            showAlert('Updated Failed');
+
+        setTimeout(is_client_updating(false), 1000);
     });
 }
 
@@ -139,7 +140,8 @@ setInterval(() => {
     update_dashboard_time()
 
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
-    get_data();
+    if (!updating_client)
+        get_data();
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -148,8 +150,8 @@ setInterval(() => {
 
     renderIconShadow();
 
-    motor_email_handler();
-    light_email_handler();
+    // motor_email_handler();
+    // light_email_handler();
 
 }, 1000)
 
@@ -247,6 +249,7 @@ function pasteData(res) {
     data.humid = res.humid ?? data.humid;
 }
 
+//Rendering + Animation
 function setAnimation(name, animation) {
     $(name).toggleClass(animation);
 }

@@ -61,8 +61,8 @@ def connectMqtt():
 def on_message(cli, userdata, msg):
     #set up client credentials
     msg.payload = msg.payload.strip()
-    print(msg.payload)
-    global tag_id, lightIntensity, client_setting
+
+    global tag_id, lightIntensity, client_setting, mailClient, mailerApp
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
         lightIntensity = float(msg.payload.decode()) or 0.0
@@ -128,7 +128,7 @@ def send_mail():
     emailSubject = request.form['subject']
     emailContent = request.form['content']
 
-    mailerApp.sendmail(sendTo, emailSubject, emailContent)
+    # mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return '', 200
 
@@ -162,14 +162,17 @@ def set_motor():
 
 @app.route("/update_client", methods=["POST"])
 def update_client():
+    global tag_id, client_setting
+
     user = request.form['username']
     temp = int(request.form['temp'])
     humid = int(request.form['humid'])
     light = int(request.form['light'])
 
     success = client.update(tag_id, {'username': user, 'email': 'N/A', 'fav_temp': temp, 'fav_humid': humid, 'fav_light_intensity': light})
-
-    return '', 200 if success else 404
+    if (success):
+        client_setting = client.getClient(tag_id)
+    return str(success), 200
 
 if __name__ == '__main__':
     #connec to mqtt

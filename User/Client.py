@@ -56,6 +56,7 @@ class Client:
         'fav_light_intensity': Client.default_fav_lightInt
       })
     data = self.getClient(id)
+    print(data)
     
     return data
 
@@ -114,7 +115,7 @@ class Client:
 
     res = c.execute(sql, data)
     conn.commit()
-
+    print(self.getClient(id))
     c.close
     conn.close
     data['id'] = id
