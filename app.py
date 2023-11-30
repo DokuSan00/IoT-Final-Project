@@ -50,7 +50,8 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    mqtt_client.connect("172.20.10.9")
+    mqtt_client.connect("10.0.0.165")
+    # mqtt_client.connect("172.20.10.9")
     # mqtt_client.connect("192.168.0.119")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
@@ -162,13 +163,13 @@ def set_motor():
 @app.route("/update_client", methods=["POST"])
 def update_client():
     user = request.form['username']
-    temp = request.form['temp']
-    humid = request.form['humid']
-    light = request.form['light']
+    temp = int(request.form['temp'])
+    humid = int(request.form['humid'])
+    light = int(request.form['light'])
 
-    # success = client.update(tag_id, {'username': user, 'email': 'N/A', 'fav_temp': temp, 'fav_humid': humid, 'fav_light_intensity': light})
+    success = client.update(tag_id, {'username': user, 'email': 'N/A', 'fav_temp': temp, 'fav_humid': humid, 'fav_light_intensity': light})
 
-    return '', 200
+    return '', 200 if success else 404
 
 if __name__ == '__main__':
     #connec to mqtt

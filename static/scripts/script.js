@@ -67,6 +67,10 @@ function update_client_setting() {
     is_client_updating(true);
     $.post("/update_client", { username: user, temp: tempVal, humid: humidVal, light: lightVal }, function(res) {
         is_client_updating(false);
+        if (res == 200)
+            showAlert('Updated Successfull');
+        else
+            showAlert('Updated Failed')
     });
 }
 
@@ -144,8 +148,8 @@ setInterval(() => {
 
     renderIconShadow();
 
-    // motor_email_handler();
-    // light_email_handler();
+    motor_email_handler();
+    light_email_handler();
 
 }, 1000)
 

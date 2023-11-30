@@ -44,7 +44,7 @@ class Client:
     return
 
   def login(self, id):
-    cols, data = self.getClient(id)
+    data = self.getClient(id)
     
     if (not data):
       self.create({
@@ -55,9 +55,9 @@ class Client:
         'fav_humid': Client.default_fav_humid,
         'fav_light_intensity': Client.default_fav_lightInt
       })
-    cols, data = self.getClient(id)
+    data = self.getClient(id)
     
-    return self.convert_data_to_dict(cols, data)
+    return data
 
 
   def getClient(self, id):
@@ -73,7 +73,7 @@ class Client:
     c.close
     conn.close
 
-    return cols, data
+    return self.convert_data_to_dict(cols, data)
 
   def convert_data_to_dict(self, cols, data):
     res = {}
@@ -117,5 +117,23 @@ class Client:
 
     c.close
     conn.close
+    data['id'] = id
+    return self.check_updated(id, data)
+  
+  def check_updated(self, id, data):
+    fromDB = self.getClient(id)
 
-    return res
+    if (fromDB['id'] != data['id']):
+      return 0
+    if (fromDB['email'] != data['email']):
+      return 0
+    if (fromDB['username'] != data['username']):
+      return 0
+    if (fromDB['fav_temp'] != data['fav_temp']):
+      return 0
+    if (fromDB['fav_humid'] != data['fav_humid']):
+      return 0
+    if (fromDB['fav_light_intensity'] != data['fav_light_intensity']):
+      return 0
+    return 1
+    
