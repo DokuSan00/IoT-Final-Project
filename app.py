@@ -128,7 +128,7 @@ def send_mail():
     emailSubject = request.form['subject']
     emailContent = request.form['content']
 
-    # mailerApp.sendmail(sendTo, emailSubject, emailContent)
+    mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return '', 200
 
