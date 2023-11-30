@@ -318,7 +318,7 @@ function renderIconShadow() {
         });
     }
 
-    if (hot == (data.temp > 24)) return;
+    if (hot == (data.temp > client_setting.fav_temp)) return;
     hot = !hot;
     $(".temp-div").toggleClass("hot-temp-shadow");
 }
