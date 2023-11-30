@@ -41,6 +41,7 @@ class Client:
     
     c.close
     conn.close
+    return
 
   def login(self, id):
     cols, data = self.getClient(id)
@@ -103,7 +104,6 @@ class Client:
     sql = """
       UPDATE clients_test
       SET 
-        id = :id,
         email = :email,
         username = :username,
         fav_temp = :fav_temp,
@@ -113,7 +113,7 @@ class Client:
     """.format(id)
 
     res = c.execute(sql, data)
-    c.commit()
+    conn.commit()
 
     c.close
     conn.close

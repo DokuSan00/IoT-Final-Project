@@ -53,6 +53,23 @@ function toggleMode(name) {
 
 }
 
+
+let updating_client = false;
+function is_client_updating(state) {
+    updating_client = state;
+}
+function update_client_setting() {
+    let user = document.getElementById('username').value;
+    let tempVal = document.getElementById('fav_temp').value;
+    let humidVal = document.getElementById('fav_humid').value;
+    let lightVal = document.getElementById('fav_lightInt').value;
+
+    is_client_updating(true);
+    $.post("/update_client", { username: user, temp: tempVal, humid: humidVal, light: lightVal }, function(res) {
+        is_client_updating(false);
+    });
+}
+
 // const mail_cd_to_set = 60; //based cd, 3mins in second
 // var cur_mail_cd = 10; //the cd that will be reduce
 // here is the data for html
@@ -64,15 +81,20 @@ let client_setting = {}
 let currentTime = "--:--:--"
 
 function get_date() {
-    return new Date();
+    date = new Date();
+    return new Date(
+        date.toLocaleString('en-US', {
+            timeZone: "America/New_York"
+        })
+    );
 }
 
 function update_dashboard_time() {
     date = get_date()
     const pad = 2;
-    const hr = date.getUTCHours().toString();
-    const mi = date.getUTCMinutes().toString();
-    const sc = date.getUTCSeconds().toString();
+    const hr = date.getHours().toString();
+    const mi = date.getMinutes().toString();
+    const sc = date.getSeconds().toString();
 
     const day = date.getDate();
     const month = date.getMonth()+1;
@@ -86,18 +108,25 @@ function update_dashboard_time() {
     $("#date-text").html(`${day}-${month}-${year}`);
 }
 
+prev_client = {}
 function set_user(client) {
+    if (JSON.stringify(client) == JSON.stringify(prev_client))
+        return;
     if (JSON.stringify(client) == JSON.stringify(client_setting))
         return;
+
+    setTimeout(() => {
+        prev_client = client_setting;
+    }, 1500);
     client_setting = client;
     update_user_dashboard();
+    showAlert("Welcome!! " + client.username)
 }
 
 function get_data() {
     $.get('/get_data', function (res) {
         pasteData(res);
         set_user(res.client_setting)
-        showAlert("Welcome!! " + res.username)
     });
 }
 
@@ -106,7 +135,7 @@ setInterval(() => {
     update_dashboard_time()
 
     //get breadboard data from app.py named get_data every other second, and call pasteData callback function
-    // get_data();
+    get_data();
 
     //update values of the dashboard
     $("#temp-text").html(data.temp);
@@ -122,10 +151,11 @@ setInterval(() => {
 
 
 function update_user_dashboard() {
+    console.log(client_setting);
     document.getElementById('username').value = client_setting.username;
     document.getElementById('fav_temp').value = client_setting.fav_temp;
     document.getElementById('fav_humid').value = client_setting.fav_humid;
-    document.getElementById('fav_lightInt').value = client_setting.fav_lightInt;
+    document.getElementById('fav_lightInt').value = client_setting.fav_light_intensity;
 
     return;
 }
@@ -164,7 +194,7 @@ function showAlert(alertMessage) {
     const alertDiv = document.getElementById('alert-notif');
     const appendAlert = () => {
         wrapper.innerHTML = `<div class="alert-custom" role="alert">${message}</div>`;
-        alertDiv.append(wrapper);   
+        alertDiv.prepend(wrapper);   
     }
     appendAlert();
 

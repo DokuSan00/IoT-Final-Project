@@ -15,7 +15,7 @@
 </head>
 
 <body class="bg-dark">
-    <div id="alert-notif" style="position: absolute; margin-left: auto; margin-right: auto; top: 0; left: 0; right: 0; text-align: center;"></div>
+    <div id="alert-notif" style="position: absolute; height: 50 px; overflow: hidden; margin-left: auto; margin-right: auto; top: 0; left: 0; right: 0; text-align: center;"></div>
     <div id="dash-content" class="text-white" style="width: 80%; height: 100%; margin: auto; margin-top: 70px;">
         <div class="row justify-content-center" style="">
             <div name="left-wrapper" class="col-md-3" style="">
@@ -60,7 +60,7 @@
     
                             <div name="bottom-wrapper" class="" style="">
                                 <div class="row p" style="width: 70%; margin: auto;">
-                                    <button type="button" class="btn btn-block btn-md border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white">
+                                    <button onclick="update_client_setting();" type="button" class="btn btn-block btn-md border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white">
                                         Edit
                                     </button>
                                 </div>
@@ -68,15 +68,15 @@
                                 <div style="height: 40px"></div>
     
                                 <div>
-                                    <div class="row md-3">
+                                    <!-- <div class="row md-3">
                                         <label class="col-sm-5 col-form-label">
-                                            Custom Email:
+                                            Time Zone:
                                         </label>
                                         <div class="col">
-                                            <input id="email" type="text" class="form-control text-white text-center" value="N/A">
+                                            <input id="timeZone" type="text" class="form-control text-white text-center" value="America/New_Yorks">
                                         </div>
                                     </div>
-                                    <div style="height: 10px;"></div>
+                                    <div style="height: 10px;"></div> -->
                                     <div class="row md-3">
                                         <label class="col-sm-8 col-form-label">
                                             Prefered Temperature:
@@ -103,6 +103,7 @@
                                             <input id="fav_lightInt" type="number" class="form-control text-white" value="400">
                                         </div>
                                     </div>
+                                    <div style="height: 30px;"></div>
                                 </div>
                             </div>
                         </div>

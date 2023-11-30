@@ -43,9 +43,8 @@ lightIntensity = 0.0
 
 tag_id = "Default"
 client = Client()
-client_setting = client.login("tag_id")
+client_setting = client.login(tag_id)
 
-username = ""
 tempThreshold = 0.0
 lightIntensityThreshold = 0.0
 
@@ -61,7 +60,7 @@ def connectMqtt():
 def on_message(cli, userdata, msg):
     #set up client credentials
     msg.payload = msg.payload.strip()
-
+    print(msg.payload)
     global tag_id, lightIntensity, client_setting
     #mqtt message is a binary payload, decode it to a string and change it to other types if needed
     if (msg.topic == pResistorTopic):
@@ -72,10 +71,10 @@ def on_message(cli, userdata, msg):
         if (tag_id != temp):
             tag_id = temp
             client_setting = client.login(tag_id)
-            mailerApp.sendmail(mailClient
+            mailerApp.sendmail(mailClient,
             """
                 Welcome! User {} has join {}!
-            """.format(client_setting.username, str(datetime.now())), 
+            """.format(client_setting['username'], str(datetime.now())), 
             """
                 This is automatic mail from automatic servive.
             """)
@@ -158,6 +157,17 @@ def set_motor():
     GPIO.output(PINS['motor1'], 1)
     GPIO.output(PINS['motor2'], state * 0)
     GPIO.output(PINS['motor3'], state * 1)
+    return '', 200
+
+@app.route("/update_client", methods=["POST"])
+def update_client():
+    user = request.form['username']
+    temp = request.form['temp']
+    humid = request.form['humid']
+    light = request.form['light']
+
+    # success = client.update(tag_id, {'username': user, 'email': 'N/A', 'fav_temp': temp, 'fav_humid': humid, 'fav_light_intensity': light})
+
     return '', 200
 
 if __name__ == '__main__':
