@@ -122,7 +122,14 @@ void loop() {
   int lightIntVal = analogRead(pResistor);
   lightInt_str = String(lightIntVal);
   lightInt_str.toCharArray(lightInt, lightInt_str.length() + 1);
+  
+  if(client.loop()){
 
+    //publish the client topic for photoresistor variables and light variables
+    client.connect("vanieriot");
+    client.publish("ESP/pResistor", String(lightIntVal).c_str());
+
+  }
   // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
 if ( ! rfid.PICC_IsNewCardPresent())
  return;
@@ -161,12 +168,9 @@ rfid.PCD_StopCrypto1();
 
   
   //reconnect the client if not connected
-  
   if(client.loop()){
 
     //publish the client topic for photoresistor variables and light variables
-    client.connect("vanieriot");
-    client.publish("ESP/pResistor", lightInt);
     client.publish("rfid_reader", getHex(rfid.uid.uidByte, rfid.uid.size).c_str());
   
   delay(1000);

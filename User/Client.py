@@ -77,6 +77,8 @@ class Client:
     return self.convert_data_to_dict(cols, data)
 
   def convert_data_to_dict(self, cols, data):
+    if not cols or not data:
+      return None
     res = {}
     for i in range(len(data)):
       res[cols[i][0]] = data[i]

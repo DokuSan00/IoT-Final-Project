@@ -50,8 +50,8 @@ lightIntensityThreshold = 0.0
 
 def connectMqtt():
     #set up MQTT client and connect to the localhost
-    mqtt_client.connect("10.0.0.165")
-    # mqtt_client.connect("172.20.10.9")
+    # mqtt_client.connect("10.0.0.165")
+    mqtt_client.connect("172.20.10.9")
     # mqtt_client.connect("192.168.0.119")
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
@@ -74,11 +74,11 @@ def on_message(cli, userdata, msg):
             client_setting = client.login(tag_id)
             mailerApp.sendmail(mailClient,
             """
-                Welcome! User {} has join {}!
-            """.format(client_setting['username'], str(datetime.now())), 
+                Welcome message from automatic service!
+            """, 
             """
-                This is automatic mail from automatic servive.
-            """)
+                Welcome! User {} has join {}!
+            """.format(client_setting['username'], str(datetime.now())))
             
 
 def on_connect(client, user_data, flags, rc):
@@ -110,16 +110,16 @@ def set_light():
 @app.route("/get_data", methods=["GET"])
 def get_data():
     res = {"light": lightIntensity or None, "client_setting": client_setting or None}    
+    #getting data from breadboard
     try:
-        #getting data from breadboard
         chk = dht.readDHT11()
+        
         if (chk is dht.DHTLIB_OK):
             res["humid"] = dht.humidity
             res["temp"] = dht.temperature
     except:
         pass
 
-    # print(res)
     return res
 
 @app.route("/send_mail", methods=["POST"])
@@ -128,7 +128,7 @@ def send_mail():
     emailSubject = request.form['subject']
     emailContent = request.form['content']
 
-    # mailerApp.sendmail(sendTo, emailSubject, emailContent)
+    mailerApp.sendmail(sendTo, emailSubject, emailContent)
 
     return '', 200
 

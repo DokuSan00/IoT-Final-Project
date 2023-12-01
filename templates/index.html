@@ -20,35 +20,40 @@
         <div class="row justify-content-center" style="">
             <div name="left-wrapper" class="col-md-3" style="">
                 <div id="top-left" name="top-left" style="">
-                    <hr class="text-white">
+                    <hr class="text-white" style="top: 0; margin-top: 0px;">
                     <div class="" style="text-align: center;">
                         <div class="">
                             <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
                                 <h4 id="date-label" class="text-white-50">Current Date</h4>
-                                <h4 id="date-text" class="text-white-50">--:--:--</h4>
+                                <h5 id="date-text" class="text-white-50">--:--:--</h5>
                             </div>
                         </div>
-                        <div style="height: 10px"></div>
+                        <div style="height: 5px"></div>
                         <div class="">
                             <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
                                 <h4 id="time-label" class="text-white-50">Current Time</h4>
-                                <h4 id="time-text" class="text-white-50">--:--:--</h4>
+                                <h5 id="time-text" class="text-white-50">--:--:--</h5>
                             </div>
                         </div>
                         <hr class="text-white">
                     </div>
                 </div>
 
-                <div style="height: 30px"></div>
+                <div style="height: 10px"></div>
 
                 <div name="bottom-left">
                     <div class="form-shadow p-4 bg-black bg-opacity-25 border-dark rounded-top-1 rounded-bottom-3">
                         <div id="profile">
                             <hr style="width: 80%; margin: 15px auto;">
+                            <div id="user_icon" class="" style="text-align: center; width: 47%; align-items: center; margin:0px auto;">
+                                <img style=""src="../static/imgs/avatar.jpg" alt="">
+                            </div>
+                            <div style="height: 10px;"></div>
                             <div class="" style="text-align: center;">
                                 <div class="">
                                     <div class="" style="align-items: center; justify-content: center; margin: 8px auto;">
-                                        <h4 id="user_label" class="text-white-50">User:</h4>
+                                        <h4 id="user_label" class="text-white-50" style="margin: 0px auto">Username:</h4>
+                                        <div style="height: 5px;"></div>
                                         <input id="username" type="text" class="h5 text-center text-white-50 form-control" value="Anonymous">
                                     </div>
                                 </div>
@@ -56,16 +61,16 @@
     
                             <hr style="width: 80%; margin: 15px auto;">
     
-                            <div style="height: 15px"></div>
+                            <div style="height: 10px"></div>
     
                             <div name="bottom-wrapper" class="" style="">
                                 <div class="row p" style="width: 70%; margin: auto;">
                                     <button onclick="update_client_setting();" type="button" class="btn btn-block btn-md border border-2 border-black border-opacity-10 bg-black bg-opacity-50 text-white">
-                                        Edit
+                                        Update Profile
                                     </button>
                                 </div>
     
-                                <div style="height: 40px"></div>
+                                <div style="height: 30px"></div>
     
                                 <div>
                                     <!-- <div class="row md-3">
@@ -85,15 +90,15 @@
                                             <input id="fav_temp" type="number" class="form-control text-white" value="24">
                                         </div>
                                     </div>
-                                    <div style="height: 10px;"></div>
-                                    <div class="row md-3">
+                                    <!-- <div style="height: 10px;"></div> -->
+                                    <!-- <div class="row md-3">
                                         <label class="col-sm-8 col-form-label">
                                             Prefered Humid:
                                         </label>
                                         <div class="col">
                                             <input id="fav_humid" type="number" class="form-control text-white" value="40">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div style="height: 10px;"></div>
                                     <div class="row md-3">
                                         <label class="col-sm-8 col-form-label">
@@ -103,7 +108,7 @@
                                             <input id="fav_lightInt" type="number" class="form-control text-white" value="400">
                                         </div>
                                     </div>
-                                    <div style="height: 30px;"></div>
+                                    <div style="height: 35px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +165,7 @@
                             <div class="row">
                                 <div class="col-7">
                                     <h3 class="">Bluetooth</h3>
-                                    <h4 id="lightInt-text" class="text-white-50">0</h4>
+                                    <h4 id="lightInt-text" class="text-white-50">Not Available</h4>
                                 </div>
                                 <div class="col text-center">
                                     <img id="lightInt-icon" src="../static/imgs/bluetooth.png">

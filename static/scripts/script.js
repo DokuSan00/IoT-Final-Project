@@ -61,7 +61,8 @@ function is_client_updating(state) {
 function update_client_setting() {
     let user = document.getElementById('username').value;
     let tempVal = document.getElementById('fav_temp').value;
-    let humidVal = document.getElementById('fav_humid').value;
+    // let humidVal = document.getElementById('fav_humid').value;
+    let humidVal = 40
     let lightVal = document.getElementById('fav_lightInt').value;
 
     is_client_updating(true);
@@ -75,8 +76,6 @@ function update_client_setting() {
     });
 }
 
-// const mail_cd_to_set = 60; //based cd, 3mins in second
-// var cur_mail_cd = 10; //the cd that will be reduce
 // here is the data for html
 let data = { temp: 0, light: 0, humid: 0 };
 let motorEmailSent = false;
@@ -124,8 +123,11 @@ function set_user(client) {
         prev_client = client_setting;
     }, 1500);
     client_setting = client;
+
+    update_animation_threshold()
     update_user_dashboard();
-    showAlert("Welcome!! " + client.username)
+
+    // showAlert("Welcome " + client.username + " !")
 }
 
 function get_data() {
@@ -150,17 +152,17 @@ setInterval(() => {
 
     renderIconShadow();
 
-    // motor_email_handler();
-    // light_email_handler();
+    motor_email_handler();
+    light_email_handler();
 
-}, 1000)
+}, 500)
 
 
 function update_user_dashboard() {
     console.log(client_setting);
     document.getElementById('username').value = client_setting.username;
     document.getElementById('fav_temp').value = client_setting.fav_temp;
-    document.getElementById('fav_humid').value = client_setting.fav_humid;
+    // document.getElementById('fav_humid').value = client_setting.fav_humid;
     document.getElementById('fav_lightInt').value = client_setting.fav_light_intensity;
 
     return;
@@ -168,11 +170,15 @@ function update_user_dashboard() {
 
 function light_email_handler() {
     if (properties['light']['isManual']) return;
-    if (data.light >= client_setting.fav_lightInt) {
+    
+    lightState = getMode(properties['light']['div']);
+    if (data.light >= client_setting.fav_light_intensity) {
         lightEmailSent = 0;
+        if (lightState) {
+            toggleMode('light');
+        }
         return;
     }
-    lightState = getMode(properties['light']['div']);
     if (lightState) return;
 
     //Getting current date and time
@@ -193,7 +199,7 @@ function light_email_handler() {
 }
 
 function showAlert(alertMessage) {
-    const duration = 10000; //10s
+    const duration = 7000; //7s
     const message = alertMessage;
     const wrapper = document.createElement('div');
 
@@ -220,7 +226,7 @@ function motor_email_handler() {
         toggleMode('motor');
     });
 
-    if (data.temp <= 24) {
+    if (data.temp < client_setting.fav_temp) {
         if (!properties['motor']['isManual']) { // turn off motor when temp <= 24
             if (motor_state != 0) {
                 toggleMode('motor');
@@ -260,8 +266,8 @@ const icon_properties = {
     maxInvert: 80,
     temp: {
         icon: "#temp-icon",
-        minVal: 20,
-        maxVal: 26,
+        minVal: client_setting.fav_temp - 10,
+        maxVal: client_setting.fav_temp + 10,
         hue_rotation: 320,
         red: 255,
         green: 10,
@@ -278,8 +284,8 @@ const icon_properties = {
     },
     light: {
         icon: "#lightInt-icon",
-        minVal: 100,
-        maxVal: 700,
+        minVal: client_setting.fav_light_intensity - 100,
+        maxVal: client_setting.fav_light_intensity + 200,
         hue_rotation: 10,
         red: 255,
         green: 252,
@@ -287,7 +293,14 @@ const icon_properties = {
     }
 };
 
-calcAllSlope();
+function update_animation_threshold() {
+    icon_properties['temp']['minVal'] = client_setting.fav_temp - 10;
+    icon_properties['temp']['maxVal'] = client_setting.fav_temp + 10;
+    icon_properties['light']['minVal'] = client_setting.fav_light_intensity - 100;
+    icon_properties['light']['maxVal'] = client_setting.fav_light_intensity + 200;
+    calcAllSlope();
+}
+
 function calcAllSlope() {
     function calcSlope(icon) {
         prop = icon_properties[icon];
@@ -301,7 +314,6 @@ function renderIconShadow() {
     function render(icon) {
         const prop = icon_properties[icon];
         const val = (icon == 'light') * data.light + (icon == 'temp') * data.temp + (icon == 'humid') * data.humid;
-
         const invert = (clamp(val, prop['minVal'], prop['maxVal']) - prop['minVal']) / prop['slope'];
 
         $(prop['icon']).css({
