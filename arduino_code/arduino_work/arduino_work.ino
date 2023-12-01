@@ -16,10 +16,6 @@ byte nuidPICC[4];
 String hexRfid;
 
 //credentials for the mqtt server(broker)
-//const char* ssid = "VIDEOTRON4632";
-//const char* password = "3R73C9XK3NWFU";
-//const char* mqtt_server = "192.168.0.101";
-
 const char* ssid = "1010";
 const char* password = "kocopass";
 const char* mqtt_server = "172.20.10.9";
