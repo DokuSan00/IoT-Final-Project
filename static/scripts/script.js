@@ -267,7 +267,7 @@ const icon_properties = {
     temp: {
         icon: "#temp-icon",
         minVal: client_setting.fav_temp - 10,
-        maxVal: client_setting.fav_temp + 10,
+        maxVal: client_setting.fav_temp + 4,
         hue_rotation: 320,
         red: 255,
         green: 10,
