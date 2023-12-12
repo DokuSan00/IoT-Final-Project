@@ -285,7 +285,7 @@ const icon_properties = {
     light: {
         icon: "#lightInt-icon",
         minVal: client_setting.fav_light_intensity - 100,
-        maxVal: client_setting.fav_light_intensity + 200,
+        maxVal: client_setting.fav_light_intensity + 150,
         hue_rotation: 10,
         red: 255,
         green: 252,
@@ -295,9 +295,9 @@ const icon_properties = {
 
 function update_animation_threshold() {
     icon_properties['temp']['minVal'] = client_setting.fav_temp - 10;
-    icon_properties['temp']['maxVal'] = client_setting.fav_temp + 10;
+    icon_properties['temp']['maxVal'] = client_setting.fav_temp + 4;
     icon_properties['light']['minVal'] = client_setting.fav_light_intensity - 100;
-    icon_properties['light']['maxVal'] = client_setting.fav_light_intensity + 200;
+    icon_properties['light']['maxVal'] = client_setting.fav_light_intensity + 150;
     calcAllSlope();
 }
 
