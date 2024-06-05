@@ -1,4 +1,0 @@
-Questions from Ali:
-1) what is function res?
-2) what is $ sign (jquery) and why it gets routes from app.py?
-3) Jquery functions with html?
